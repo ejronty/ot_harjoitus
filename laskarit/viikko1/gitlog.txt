@@ -1,3 +1,5 @@
+Git-harjoituksen tulos:
+
 commit 33bb8fb663f7617c7681dc244079b2af89ef05a0
 Author: Eelis <32396100+ejronty@users.noreply.github.com>
 Date:   Thu Oct 29 11:32:05 2020 +0200
