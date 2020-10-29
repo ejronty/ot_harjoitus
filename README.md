@@ -8,3 +8,6 @@ Tämä repositorio tulee sisältämään _ohjelmistotekniikka_ -kurssin **harjoi
 [gitlog.txt](https://github.com/ejronty/ot_harjoitus/blob/master/laskarit/viikko1/gitlog.txt)
 
 [komentorivi.txt](https://github.com/ejronty/ot_harjoitus/blob/master/laskarit/viikko1/komentorivi.txt)
+
+
+Tilapäinen tekstirivi
