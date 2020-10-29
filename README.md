@@ -9,5 +9,3 @@ Tämä repositorio tulee sisältämään _ohjelmistotekniikka_ -kurssin **harjoi
 
 [komentorivi.txt](https://github.com/ejronty/ot_harjoitus/blob/master/laskarit/viikko1/komentorivi.txt)
 
-
-Tilapäinen tekstirivi
