@@ -28,7 +28,12 @@ public class Tool {
         }
         
         Tool other = (Tool) obj;
-        return this.name.equals(other.getName());
+        return this.name.equalsIgnoreCase(other.getName());
+    }
+    
+    @Override
+    public String toString() {
+        return this.name;
     }
     
 }
