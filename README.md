@@ -1,6 +1,7 @@
 # Työvälinekirjanpito
 
 Sovellus on tarkoitettu avuksi henkilölle, joka työssään matkustaa useiden toimipisteiden välillä. Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineistä ja niiden määristä.
+
 Sovellus on tarkoitettu käytettäväksi yksityisellä laitteella, eikä se sisällä (vielä) käyttäjänhallintaa.
 
 ### Dokumentaatio
