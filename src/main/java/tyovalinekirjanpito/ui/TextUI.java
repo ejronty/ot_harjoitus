@@ -34,7 +34,7 @@ public class TextUI {
         System.out.println("Mahtava työvälinekirjanpitosovellus!");
         System.out.println("");
         printOptions();
-        while(true) {
+        while (true) {
             System.out.println("");
             System.out.println("Syötä komento: ");
             String command = scanner.nextLine();

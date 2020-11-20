@@ -38,7 +38,7 @@ public class InventoryService {
         return true;
     }
     
-    public boolean addToolToOffice(String office, String tool){
+    public boolean addToolToOffice(String office, String tool) {
         if (!(this.offices.containsKey(office)) || !(this.tools.containsKey(tool))) {
             return false;
         }
