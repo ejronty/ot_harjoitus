@@ -2,6 +2,7 @@
 package tyovalinekirjanpito.domain;
 
 
+import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -45,5 +46,21 @@ public class OfficeTest {
         office.addTool(tool);
         office.addTool(tool);
         assertEquals(1, office.getTools().size());
+    }
+    
+    @Test
+    public void toStringReturnsTheNameOfTheOffice() {
+        assertEquals("main office", office.toString());
+    }
+    
+    @Test
+    public void itIsPossibleToAddAListOfToolsToAnOfficeAtOnce() {
+        ArrayList<Tool> tools = new ArrayList<>();
+        tools.add(tool);
+        tools.add(new Tool("drill"));
+        tools.add(new Tool("sdrewdriver"));
+        
+        office.setTools(tools);
+        assertEquals(3, office.getTools().size());
     }
 }

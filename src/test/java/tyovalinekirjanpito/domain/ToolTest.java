@@ -31,4 +31,9 @@ public class ToolTest {
         Tool hammer = new Tool("hammer");
         assertTrue(tool.equals(hammer));
     }
+    
+    @Test
+    public void toStringReturnsTheNameOfTheTool() {
+        assertEquals("hammer", tool.toString());
+    }
 }

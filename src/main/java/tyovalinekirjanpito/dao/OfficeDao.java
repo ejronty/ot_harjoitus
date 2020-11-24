@@ -18,6 +18,6 @@ public interface OfficeDao {
     
     void rename(String oldName, String newName) throws Exception;
     
-    void linkTogether(Office office, Tool tool) throws Exception;
+    //void linkTogether(Office office, Tool tool) throws Exception;
     
 }
