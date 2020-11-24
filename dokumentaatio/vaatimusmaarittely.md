@@ -18,13 +18,26 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
     * Lopetus
 
 #### Muita näkymiä / toimintoja
-* Toimipisteen lisääminen
-* Työvälineen lisääminen
-* Työvälineen lisääminen toimipisteeseen ja lukumäärän muutokset
-* Työvälineiden listaus aakkosittain tai toimipisteittäin.
+* Työvälineen
+    * ~~lisääminen~~ tehty
+    * ~~uudelleennimeäminen~~ tehty
+    * poistaminen
+
+* Toimipisteen
+    * ~~lisääminen~~ tehty
+    * ~~uudelleennimeäminen~~ tehty
+    * poistaminen
+
+* ~~Työvälineen lisääminen toimipisteeseen~~ tehty
+
+* ~~Työvälineiden listaus~~ tehty
+    * ~~nimen perusteella~~
+    * ~~toimipisteittäin~~
 
 
 #### Jatkokehitysideoita
+* Graafinen käyttöliittymä
+* Tietokanta (tiedon säilyvyys käynnistysten välillä)
 * Työvälineille voi tallentaa luokkia/kategorioita/avainsanoja, joita voi hyödyntää haussa.
 * Käyttäjänhallinta, jolloin sovellusta voisi käyttää myös jaetulla laitteella.
     * Mahdollisesti myös eri käyttäjärooleja (ylläpitäjä ja normaali käyttäjä).
