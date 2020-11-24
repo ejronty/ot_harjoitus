@@ -20,7 +20,7 @@ Sovelluksen voi suorittaa komentoriviltä komennolla
 mvn compile exec:java -Dexec.mainClass=tyovalinekirjanpito.ui.TextUI
 ```
 
-Sovelluksen voi suorittaa myös Netbeansissa. Tällöin on täytyy main-luokaksi valita TextUI. Muut vaihtoehdot liittyvät graafiseen käyttöliittymään, joka ei vielä toimi.
+Sovelluksen voi suorittaa myös Netbeansissa. Tällöin täytyy main-luokaksi valita TextUI. Muut vaihtoehdot liittyvät graafiseen käyttöliittymään, joka ei vielä toimi.
 #### Testaus
 Projektin testit suoritaan komennolla
 
