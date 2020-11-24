@@ -4,6 +4,10 @@ package tyovalinekirjanpito.ui;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import tyovalinekirjanpito.dao.OfficeDao;
+import tyovalinekirjanpito.dao.TestOfficeDao;
+import tyovalinekirjanpito.dao.TestToolDao;
+import tyovalinekirjanpito.dao.ToolDao;
 import tyovalinekirjanpito.domain.InventoryService;
 
 /*
@@ -22,11 +26,14 @@ public class TextUI {
         
         this.options = new TreeMap<>();
         
-        options.put("1", "1 Lisää työväline");
+        options.put("1", "1 Lisää uusi työväline");
         options.put("2", "2 Näytä työvälineet");
-        options.put("3", "3 Lisää toimipiste");
-        options.put("4", "4 Näytä toimipisteet");
-        options.put("5", "5 Yhdistä työväline toimipisteeseen");
+        options.put("3", "3 Muokkaa työvälinettä");
+        options.put("4", "4 Lisää uusi toimipiste");
+        options.put("5", "5 Näytä toimipisteet");
+        options.put("6", "6 Muokkaa toimipistettä");
+        options.put("7", "7 Näytä toimipisteet työvälineineen");
+        options.put("8", "8 Yhdistä työväline toimipisteeseen");
         options.put("x", "x Lopeta");
     }
     
@@ -39,23 +46,47 @@ public class TextUI {
             System.out.println("Syötä komento: ");
             String command = scanner.nextLine();
             if (!this.options.containsKey(command)) {
-                System.out.println("Epäkelpo komento!");
+                System.out.println("Epäkelpo komento! \n");
                 printOptions();
             }
             
             if (command.equals("x")) {
                 break;
-            } else if (command.equals("1")) {
-                createTool();
-            } else if (command.equals("2")) {
-                displayTools();
-            } else if (command.equals("3")) {
-                createOffice();
-            } else if (command.equals("4")) {
-                displayOffices();
-            } else if (command.equals("5")) {
-                addToolToAnOffice();
+            } else {
+                respondToCommand(command);
             }
+        }
+    }
+    
+    private void respondToCommand(String command) {
+        
+        switch (command) {
+            case "1":
+                createTool();
+                break;
+            case "2":
+                displayTools();
+                break;
+            case "3":
+                renameTool();
+                break;
+            case "4":
+                createOffice();
+                break;
+            case "5":
+                displayOffices();
+                break;
+            case "6":
+                renameOffice();
+                break;
+            case "7":
+                displayOfficesWithTools();
+                break;
+            case "8":
+                addToolToAnOffice();
+                break;
+            default:
+                break;
         }
     }
     
@@ -69,7 +100,7 @@ public class TextUI {
         System.out.println("Anna nimi lisättävälle työvälineelle: ");
         String name = scanner.nextLine();
         
-        if (!service.addTool(name.toLowerCase())) {
+        if (!service.createTool(name)) {
             System.out.println("Työväline löytyi jo ennestään.");
         } else {
             System.out.println("Lisätty onnistuneesti.");
@@ -81,11 +112,25 @@ public class TextUI {
         System.out.println(service.displayTools());
     }
     
+    private void renameTool() {
+        this.displayTools();
+        System.out.println("Mitä työvälinettä haluat muokata?");
+        String oldName = scanner.nextLine();
+        System.out.println("Anna työvälineelle uusi nimi: ");
+        String newName = scanner.nextLine();
+        
+        if (service.renameTool(oldName, newName)) {
+            System.out.println("Nimi muutettu onnistuneesti. \n");
+        } else {
+            System.out.println("Nimen muutos epäonnistui.");
+        }
+    }
+    
     private void createOffice() {
         System.out.println("Anna nimi lisättävälle toimipisteelle: ");
         String name = scanner.nextLine();
         
-        if (!service.addOffice(name.toLowerCase())) {
+        if (!service.createOffice(name)) {
             System.out.println("Tällä nimellä löytyi jo toimipiste.");
         } else {
             System.out.println("Lisäys onnistui.");
@@ -93,18 +138,37 @@ public class TextUI {
     }
     
     private void displayOffices() {
-        System.out.println("Ohjelmasta löytyy seuraavat toimipisteet "
-                + "työvälineineen: ");
+        System.out.println("Ohjelmasta löytyy seuraavat toimipisteet:");
         System.out.println(service.displayOffices());
     }
     
+    private void renameOffice() {
+        this.displayOffices();
+        System.out.println("Minkä toimipisteen haluat uudelleennimetä?");
+        String oldName = scanner.nextLine();
+        System.out.println("Anna toimipisteelle uusi nimi: ");
+        String newName = scanner.nextLine();
+        
+        if (service.renameOffice(oldName, newName)) {
+            System.out.println("Toimipisteen nimi muutettu.");
+        } else {
+            System.out.println("Nimen muutos epäonnistui.");
+        }
+    }
+    
+    private void displayOfficesWithTools() {
+        System.out.println("Ohjelmasta löytyy seuraavat toimipisteet "
+                + "työvälineineen: ");
+        System.out.println(service.displayOfficesWithTools());
+    }
+    
     private void addToolToAnOffice() {
-        System.out.println("Mihin toimistoon haluat lisätä työvälineen?");
-        System.out.println("Anna toimiston nimi: ");
+        this.displayOffices();
+        System.out.println("Mihin toimipisteeseen haluat lisätä työvälineen?");
         String officeName = scanner.nextLine();
         System.out.println("");
+        this.displayTools();
         System.out.println("Minkä työvälineen haluat lisätä?");
-        System.out.println("Anna työvälineen nimi: ");
         String toolName = scanner.nextLine();
         
         if (!service.addToolToOffice(officeName.toLowerCase(), toolName.toLowerCase())) {
@@ -116,7 +180,9 @@ public class TextUI {
     
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        InventoryService service = new InventoryService();
+        ToolDao toolDao = new TestToolDao();
+        OfficeDao officeDao = new TestOfficeDao();
+        InventoryService service = new InventoryService(toolDao, officeDao);
         
         TextUI textUI = new TextUI(scanner, service);
         textUI.start();

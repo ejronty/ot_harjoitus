@@ -19,24 +19,12 @@ import tyovalinekirjanpito.domain.InventoryService;
 public class InventoryUI extends Application{
     
     private InventoryService service;
-    
+    /*
     @Override
     public void init() {
         service = new InventoryService();
-        //Tilapäistä testidataa
-        service.addTool("veitsi");
-        service.addTool("haarukka");
-        service.addTool("kirves");
-        service.addTool("vasara");
-        service.addOffice("keittiö");
-        service.addOffice("vaja");
-        service.addOffice("tyhjiö");
-        service.addToolToOffice("keittiö", "veitsi");
-        service.addToolToOffice("keittiö", "haarukka");
-        service.addToolToOffice("vaja", "kirves");
-        service.addToolToOffice("vaja", "vasara");
     }
-    
+    */
     @Override
     public void start(Stage window) {
         window.setTitle("Työvälinekirjanpito");

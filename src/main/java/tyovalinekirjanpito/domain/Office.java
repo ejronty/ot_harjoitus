@@ -44,18 +44,7 @@ public class Office {
     
     @Override
     public String toString() {
-        String result = this.name + "\n";
-        
-        if (this.tools.size() == 0) {
-            result += "    Ei työvälineitä.";
-        } else {
-            result += "    Täältä löytyy seuraavat työvälineet: \n";
-            for (Tool item : this.tools) {
-                result += "    " + item.toString() + "\n";
-            }
-        }
-        
-        return result;
+        return this.name;
     }
     
 }
