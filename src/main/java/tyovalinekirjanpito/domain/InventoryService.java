@@ -1,6 +1,9 @@
 
 package tyovalinekirjanpito.domain;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.ToolDao;
 
@@ -46,6 +49,19 @@ public class InventoryService {
             return false;
         }
         return true;
+    }
+    
+    public boolean deleteTool(String name) {
+    // Tähän pitää tehdä muutoksia, kunhan findByName on implementoitu.
+        try {
+            if (! this.toolDao.exists(name)) {
+                return false;
+            }
+            this.toolDao.delete(new Tool(name));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     public boolean createOffice(String officeName) {
@@ -105,6 +121,14 @@ public class InventoryService {
             result += tool.toString() + "\n";
         }
         return result;
+    }
+    
+    // Tilapäinen testimetodi
+    public Collection<String> getToolList() {
+        return this.toolDao.getAll()
+                .stream()
+                .map(t -> t.toString())
+                .collect(Collectors.toList());
     }
     
     public String displayOffices() {

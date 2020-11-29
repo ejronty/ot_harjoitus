@@ -17,4 +17,6 @@ public interface ToolDao {
     boolean exists(String name);
     
     void rename(String oldName, String newName) throws Exception;
+    
+    void delete(Tool tool) throws Exception;
 }
