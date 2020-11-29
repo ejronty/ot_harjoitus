@@ -5,22 +5,16 @@ package tyovalinekirjanpito.domain;
   Yksittäistä työvälinettä kuvaava luokka.
 */
 
-public class Tool {
-    
-    private String name;
-    
+public class Tool extends Thing {
+
     public Tool(String name) {
-        this.name = name;
+        super(name);
     }
 
-    public String getName() {
-        return name;
+    public Tool(String name, int id) {
+        super(name, id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Tool)) {
@@ -30,10 +24,5 @@ public class Tool {
         Tool other = (Tool) obj;
         return this.name.equalsIgnoreCase(other.getName());
     }
-    
-    @Override
-    public String toString() {
-        return this.name;
-    }
-    
+
 }

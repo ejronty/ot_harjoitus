@@ -1,4 +1,4 @@
-# Alustava vaatimusmäärittely
+# Vaatimusmäärittely
 
 ## Sovelluksen tarkoitus
 
@@ -10,12 +10,12 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 * Koska kyseessä on työpöytäsovellus, ei tässä vaiheessa toteuteta käyttäjänhallintaa. Sovellusta oletetaan käytettävän yksityisellä laitteella.
 * Alla alustavia ideoita sovelluksen toiminnallisuuksiin. Kaikkea ei välttämättä toteuteta kurssin aikana.
 
-#### Päänäkymä
-* Hakukenttä (esim haku työvälineen nimellä)
+#### Aloitusnäkymä
 * Valikko
-    * Toimipisteet
-    * Työvälineet
+    * Toimipisteet/Työvälineet
+    * Toimintopainikkeet
     * Lopetus
+* Työvälineiden listaus
 
 #### Muita näkymiä / toimintoja
 * Työvälineen
@@ -33,11 +33,15 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 * ~~Työvälineiden listaus~~ tehty
     * ~~nimen perusteella~~
     * ~~toimipisteittäin~~
+    
+#### Muita vaatimuksia
+* Graafinen käyttöliittymä
+* Tiedon tallentaminen (tietokanta)
 
 
 #### Jatkokehitysideoita
-* Graafinen käyttöliittymä
-* Tietokanta (tiedon säilyvyys käynnistysten välillä)
+* Tieto työvälineiden määrästä eri toimipisteillä.
+* Hakukenttä (esim GUI:n ylälaitaan)
 * Työvälineille voi tallentaa luokkia/kategorioita/avainsanoja, joita voi hyödyntää haussa.
 * Käyttäjänhallinta, jolloin sovellusta voisi käyttää myös jaetulla laitteella.
     * Mahdollisesti myös eri käyttäjärooleja (ylläpitäjä ja normaali käyttäjä).
