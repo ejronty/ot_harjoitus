@@ -2,41 +2,48 @@
 package tyovalinekirjanpito.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import tyovalinekirjanpito.domain.Office;
+import tyovalinekirjanpito.domain.Thing;
 
 
-public class SqlOfficeDao implements OfficeDao {
-    
-    private Connection dbConnection;
-    
+public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
+
     public SqlOfficeDao(Connection connection) {
-        this.dbConnection = connection;
+        super(connection);
     }
 
     @Override
-    public Office create(Office office) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Collection<Office> getAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Collection<Office> getAll() throws Exception {
+        return super.getAll("offices")
+                .stream()
+                .map(t -> new Office(t.getName(), t.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Office findByName(String name) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Thing thing = super.findByName("offices", name);
+        return new Office(thing.getName(), thing.getId());
+    }    
 
     @Override
-    public boolean exists(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public void delete(int id) throws Exception {
 
-    @Override
-    public void rename(String oldName, String newName) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "DELETE FROM inventory WHERE officeId = ?;";
+
+        this.dbConnection.setAutoCommit(false);
+
+        super.delete("offices", id);
+
+        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
+        pstmt.setInt(1, id);
+
+        pstmt.executeUpdate();
+
+        this.dbConnection.commit();
+        this.dbConnection.setAutoCommit(true);
     }
-    
 }

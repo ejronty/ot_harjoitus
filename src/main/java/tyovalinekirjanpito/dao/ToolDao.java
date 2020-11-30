@@ -6,17 +6,11 @@ import java.util.Collection;
 import tyovalinekirjanpito.domain.Tool;
 
 
-public interface ToolDao {
-    
-    Tool create(Tool tool) throws Exception;
-    
-    Collection<Tool> getAll();
-    
+public interface ToolDao extends ThingDao {
+
+    Collection<Tool> getAll() throws Exception;
+
     Tool findByName(String name) throws Exception;
-    
-    boolean exists(String name);
-    
-    void rename(String oldName, String newName) throws Exception;
-    
-    void delete(Tool tool) throws Exception;
+
+    void delete(int id) throws Exception;
 }

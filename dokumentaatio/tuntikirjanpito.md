@@ -17,4 +17,6 @@
 | 26.11 | 6 | Tietokannan, GUI:n ja SQL-Daojen säätöä. |
 | 27.11 | 2 | Graafisen käyttöliittymän kehittelyä. |
 | 28.11 | 5.5 | GUI:n ja tietokannan säätöä. |
-| yht | 52 | |
+| 29.11 | 6.5 | GUI:n ja tietokannan kehitystä. Refaktorointia. |
+| 30.11 | 10 | Dao-luokkien kehitystä ja sovelluksen refaktorointia. |
+| yht | 68.5 | |

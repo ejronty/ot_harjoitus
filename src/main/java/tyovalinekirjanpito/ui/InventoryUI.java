@@ -6,12 +6,9 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,8 +17,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,16 +28,16 @@ import tyovalinekirjanpito.domain.InventoryService;
 
 
 public class InventoryUI extends Application{
-    
+
     private InventoryService service;
-    
-    private Node menuNode;
+
+    private VBox menuNode;
     private ListView listNode;
     private VBox contentNode;
 
     @Override
     public void init() throws Exception {
-        
+
         Connection connection = this.setUpDB();
         ToolDao toolDao = new SqlToolDao(connection);
         OfficeDao officeDao = new SqlOfficeDao(connection);
@@ -58,7 +53,9 @@ public class InventoryUI extends Application{
         
         menuNode = createMainMenu();
         listNode = drawListedItems();
-        contentNode = createNewItem();
+        contentNode = new VBox();
+        contentNode.setSpacing(5);
+        contentNode.setPadding(new Insets(5));
         
         layout.getChildren().add(menuNode);
         layout.getChildren().add(listNode);
@@ -73,15 +70,19 @@ public class InventoryUI extends Application{
 // Alla suunniteltuja metodeja, joita tullaan 
 //    tarvitsemaan käyttöliittymään.    
 
-    private Node createMainMenu() {
+    private VBox createMainMenu() {
         VBox mainMenu = new VBox();
         mainMenu.setSpacing(5);
-        mainMenu.setPadding(new Insets(5,5,5,5));
+        mainMenu.setPadding(new Insets(5));
         
         ChoiceBox toolOrOffice = new ChoiceBox();
         toolOrOffice.getItems().addAll("Työvälineet", "Toimipisteet");
         toolOrOffice.setValue("Työvälineet");
         toolOrOffice.setMinWidth(120.0);
+        toolOrOffice.setOnAction(e -> {
+            redrawList();
+            redrawContent(new VBox());
+        });
         
         Button displayButton = new Button("Näytä");
         displayButton.setMaxWidth(Double.MAX_VALUE);
@@ -92,21 +93,34 @@ public class InventoryUI extends Application{
         Button addButton = new Button("Luo uusi");
         addButton.setMaxWidth(Double.MAX_VALUE);
         addButton.setOnAction(e -> {
-            //text.setText(service.displayOffices());
+            VBox content = createNewItem();
+            redrawContent(content);
         });
         
         Button editButton = new Button("Muokkaa");
         editButton.setMaxWidth(Double.MAX_VALUE);
         editButton.setOnAction(e -> {
-            VBox node = editItem(this.listNode.getSelectionModel().getSelectedItem().toString());
-            redrawContent(node);
+            VBox content;
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                content = selectionMessage();
+            } else {
+                content = editItem(selection.toString());
+            }
+            redrawContent(content);
         });
         
         Button deleteButton = new Button("Poista");
         deleteButton.setMaxWidth(Double.MAX_VALUE);
         deleteButton.setOnAction(e -> {
-           VBox vbox = deleteItem(this.listNode.getSelectionModel().getSelectedItem().toString());
-           redrawContent(vbox);
+           VBox content;
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                content = selectionMessage();
+            } else {
+                content = deleteItem(selection.toString());
+            }
+            redrawContent(content);
         });
         
         Button joinButton = new Button("Liitä");
@@ -130,6 +144,9 @@ public class InventoryUI extends Application{
         mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(new Label(""));
+        mainMenu.getChildren().add(new Label(""));
+        mainMenu.getChildren().add(new Label(""));
+        mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(quitButton);
         
         return mainMenu;
@@ -137,14 +154,14 @@ public class InventoryUI extends Application{
 
     private ListView drawListedItems() {
         ListView<String> list = new ListView<>();
-        list.getItems().addAll(this.service.getToolList());
+        list.getItems().addAll(this.service.getItemList(this.getTableSelection()));
         
         return list;
     }
     
     private void redrawList() {
         this.listNode.getItems().clear();
-        this.listNode.getItems().addAll(this.service.getToolList());
+        this.listNode.getItems().addAll(this.service.getItemList(this.getTableSelection()));
     }
     
     private void redrawContent(VBox newContent) {
@@ -153,37 +170,37 @@ public class InventoryUI extends Application{
     }
     
     private VBox createNewItem() {
-        VBox node = new VBox();
-        node.setSpacing(5);
-        
-        Label guide = new Label("Anna nimi uudelle välineelle");
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+
+        Label guide = new Label("Anna nimi uudelle kohteelle");
         TextField nameField = new TextField();
         Button createButton = new Button("Luo");
         createButton.setOnAction(e -> {
-            if (this.service.createTool(nameField.getText())) {
+            if (this.service.create(this.getTableSelection(), nameField.getText())) {
                 redrawList();
                 nameField.setText("");
             }
         });
-        
-        node.getChildren().addAll(guide, nameField, createButton);
-        return node;
+
+        vbox.getChildren().addAll(guide, nameField, createButton);
+        return vbox;
     }
     
     private VBox editItem(String name) {
         VBox node = new VBox();
         node.setSpacing(5);
         
-        Label text = new Label("Muutetaan välinettä");
+        Label text = new Label("Muutetaan kohdetta");
         Label oldName = new Label(name);
         Label guide = new Label("Anna uusi nimi");
         
         TextField nameField = new TextField();
         Button submitButton = new Button("Muuta");
         submitButton.setOnAction(e -> {
-            this.service.renameTool(name, nameField.getText());
+            this.service.rename(this.getTableSelection(), name, nameField.getText());
             redrawList();
-            nameField.setText("");
+            redrawContent(new VBox());
         });
         
         node.getChildren().addAll(text, oldName, new Label(""), 
@@ -199,7 +216,7 @@ public class InventoryUI extends Application{
         Label itemName = new Label(name);
         Button submitButton = new Button("Poista");
         submitButton.setOnAction(e -> {
-            this.service.deleteTool(name);
+            this.service.delete(this.getTableSelection(), name);
             redrawList();
             redrawContent(new VBox());
         });
@@ -210,10 +227,38 @@ public class InventoryUI extends Application{
         return vbox;
     }
     
+    private VBox selectionMessage() {
+        VBox wrapper = new VBox();
+        Label instruction = new Label("Valitse ensin \n"
+                + "toiminnon kohde.");
+
+        wrapper.getChildren().add(instruction);
+        return wrapper;
+    }
+    
+    private String getTableSelection() {
+        ChoiceBox selector = new ChoiceBox();
+
+        for (Node node : this.menuNode.getChildren()) {
+            if (node instanceof ChoiceBox) {
+                selector = (ChoiceBox) node;
+            }
+        }
+
+        String selection = selector.getValue().toString();
+
+        if ("Työvälineet".equals(selection)) {
+            return "tools";
+        } else {
+            return "offices";
+        }
+    }
+
     @Override
     public void stop() {
         //Tietokannan sulku jotenkin?
-        System.out.println("Pitäisi sulkea");
+        System.out.println("kanta pitäisi sulkea");
+        Platform.exit();
     }
     
     public static void main(String[] args) {
