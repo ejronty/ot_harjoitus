@@ -17,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -87,13 +88,18 @@ public class InventoryUI extends Application{
         Button displayButton = new Button("Näytä");
         displayButton.setMaxWidth(Double.MAX_VALUE);
         displayButton.setOnAction(e -> {
-            //text.setText(service.displayTools());
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                redrawContent(selectionMessage());
+            } else {
+                System.out.println("Jee");
+            }
         });
         
         Button addButton = new Button("Luo uusi");
         addButton.setMaxWidth(Double.MAX_VALUE);
         addButton.setOnAction(e -> {
-            VBox content = createNewItem();
+            VBox content = createNewItemView();
             redrawContent(content);
         });
         
@@ -105,7 +111,7 @@ public class InventoryUI extends Application{
             if (selection == null) {
                 content = selectionMessage();
             } else {
-                content = editItem(selection.toString());
+                content = editItemView(selection.toString());
             }
             redrawContent(content);
         });
@@ -118,14 +124,21 @@ public class InventoryUI extends Application{
             if (selection == null) {
                 content = selectionMessage();
             } else {
-                content = deleteItem(selection.toString());
+                content = deleteItemView(selection.toString());
             }
             redrawContent(content);
         });
         
         Button joinButton = new Button("Liitä");
         joinButton.setMaxWidth(Double.MAX_VALUE);
-        //Toiminnallisuus tähän
+        joinButton.setOnAction(e -> {
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                redrawContent(selectionMessage());
+            } else {
+                redrawContent(addToolToOfficeView(selection.toString()));
+            }
+        });
         
         Button quitButton = new Button("Lopeta");
         quitButton.setMaxWidth(Double.MAX_VALUE);
@@ -169,17 +182,20 @@ public class InventoryUI extends Application{
         this.contentNode.getChildren().addAll(newContent.getChildren());
     }
     
-    private VBox createNewItem() {
+    private VBox createNewItemView() {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
 
         Label guide = new Label("Anna nimi uudelle kohteelle");
         TextField nameField = new TextField();
+        nameField.setTooltip(getTooltip());
         Button createButton = new Button("Luo");
         createButton.setOnAction(e -> {
             if (this.service.create(this.getTableSelection(), nameField.getText())) {
                 redrawList();
                 nameField.setText("");
+            } else {
+                redrawContent(detailedErrorMessage());
             }
         });
 
@@ -187,7 +203,7 @@ public class InventoryUI extends Application{
         return vbox;
     }
     
-    private VBox editItem(String name) {
+    private VBox editItemView(String name) {
         VBox node = new VBox();
         node.setSpacing(5);
         
@@ -196,19 +212,23 @@ public class InventoryUI extends Application{
         Label guide = new Label("Anna uusi nimi");
         
         TextField nameField = new TextField();
+        nameField.setTooltip(getTooltip());
         Button submitButton = new Button("Muuta");
         submitButton.setOnAction(e -> {
-            this.service.rename(this.getTableSelection(), name, nameField.getText());
-            redrawList();
-            redrawContent(new VBox());
+            if (this.service.rename(this.getTableSelection(), name, nameField.getText())) {
+                redrawList();
+                redrawContent(new VBox());
+            } else {
+                redrawContent(detailedErrorMessage());
+            }
         });
-        
+
         node.getChildren().addAll(text, oldName, new Label(""), 
                 guide, nameField, submitButton);
         return node;
     }
     
-    private VBox deleteItem(String name) {
+    private VBox deleteItemView(String name) {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
 
@@ -216,9 +236,12 @@ public class InventoryUI extends Application{
         Label itemName = new Label(name);
         Button submitButton = new Button("Poista");
         submitButton.setOnAction(e -> {
-            this.service.delete(this.getTableSelection(), name);
-            redrawList();
-            redrawContent(new VBox());
+            if (this.service.delete(this.getTableSelection(), name)) {
+                redrawList();
+                redrawContent(new VBox());
+            } else {
+                redrawContent(basicErrorMessage());
+            }
         });
 
         vbox.getChildren().addAll(question, itemName, 
@@ -227,6 +250,37 @@ public class InventoryUI extends Application{
         return vbox;
     }
     
+    private VBox addToolToOfficeView(String name) {
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        
+        Label q_part_1 = new Label("Mihin toimipisteeseen");
+        Label q_part_2 = new Label("väline");
+        Label itemName = new Label(name);
+        Label q_part_3 = new Label("liitetään?");
+        
+        ListView<String> list = new ListView();
+        list.getItems().addAll(this.service.findOfficesWithoutTool(name));
+        
+        Button submitButton = new Button("Valitse");
+        submitButton.setOnAction(e -> {
+            String officeName = list.getSelectionModel().getSelectedItem();
+            if (officeName != null) {
+                if (this.service.addToolToOffice(officeName, name)) {
+                    redrawContent(new VBox());
+                } else {
+                    redrawContent(basicErrorMessage());
+                }
+            } else {
+                redrawContent(selectionMessage());
+            }
+        });
+        
+        vbox.getChildren().addAll(q_part_1, q_part_2, itemName, 
+                q_part_3, list, submitButton);
+        return vbox;
+    }
+
     private VBox selectionMessage() {
         VBox wrapper = new VBox();
         Label instruction = new Label("Valitse ensin \n"
@@ -235,7 +289,30 @@ public class InventoryUI extends Application{
         wrapper.getChildren().add(instruction);
         return wrapper;
     }
-    
+
+    private VBox basicErrorMessage() {
+        VBox wrapper = new VBox();
+        Label msg = new Label("Jotain meni vikaan.");
+
+        wrapper.getChildren().add(msg);
+        return wrapper;
+    }
+
+    private VBox detailedErrorMessage() {
+        VBox wrapper = new VBox();
+        Label msg = new Label("Jotain meni vikaan.");
+        Label instruction = new Label("Varmista, että\n"
+                + "antamasi syöte\n"
+                + "täyttää vaatimukset.");
+
+        wrapper.getChildren().addAll(msg, new Label(), instruction);
+        return wrapper;
+    }
+
+    private Tooltip getTooltip() {
+        return new Tooltip("[a-ö], [0-9],  , -, _");
+    }
+
     private String getTableSelection() {
         ChoiceBox selector = new ChoiceBox();
 
@@ -266,40 +343,32 @@ public class InventoryUI extends Application{
     }
     
     private Connection setUpDB() {
-        
+
         Properties properties = new Properties();
         Connection dbConnection;
-        
+
         try {
             properties.load(new FileInputStream("config.properties"));
             String url = "jdbc:sqlite:" + properties.getProperty("dbPath");
             dbConnection = DriverManager.getConnection(url);
-            
+
             String createTools = "CREATE TABLE IF NOT EXISTS tools (\n"
                                 + "    id integer PRIMARY KEY, \n"
-                                + "    name text UNIQUE \n"
+                                + "    name text NOT NULL UNIQUE \n"
                                 + ");";
-            
+
             String createOffices = "CREATE TABLE IF NOT EXISTS offices (\n"
                                 + "    id integer PRIMARY KEY, \n"
-                                + "    name text UNIQUE \n"
+                                + "    name text NOT NULL UNIQUE, \n"
+                                + "    tools text DEFAULT '' \n"
                                 + ");";
-            
-            String createInventory = "CREATE TABLE IF NOT EXISTS inventory (\n"
-                                + "    officeId integer,\n"
-                                + "    toolId integer,\n"
-                                + "    amount integer,\n"
-                                + "    FOREIGN KEY (officeId) REFERENCES offices (id),\n"
-                                + "    FOREIGN KEY (toolId) REFERENCES tools (id)\n"
-                                + ");";
-            
+
             Statement statement = dbConnection.createStatement();
             statement.execute(createTools);
             statement.execute(createOffices);
-            statement.execute(createInventory);
-            
+
             return dbConnection;
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

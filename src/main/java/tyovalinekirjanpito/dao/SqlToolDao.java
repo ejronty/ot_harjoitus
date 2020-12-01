@@ -3,9 +3,10 @@ package tyovalinekirjanpito.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import tyovalinekirjanpito.domain.Thing;
 import tyovalinekirjanpito.domain.Tool;
 
 
@@ -17,33 +18,27 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
 
     @Override
     public Collection<Tool> getAll() throws Exception {
-        return super.getAll("tools")
-                .stream()
-                .map(t -> new Tool(t.getName(), t.getId()))
-                .collect(Collectors.toList());
+
+        String sql = "SELECT * FROM tools;";
+        Statement statement = this.dbConnection.createStatement();
+        ResultSet result = statement.executeQuery(sql);
+        ArrayList<Tool> list = new ArrayList<>();
+
+        while (result.next()) {
+            list.add(new Tool(result.getString("name"), result.getInt("id")));
+        }
+        return list;
     }
 
     @Override
     public Tool findByName(String name) throws Exception {
-        Thing thing = super.findByName("tools", name);
-        return new Tool(thing.getName(), thing.getId());
-    }
 
-    @Override
-    public void delete(int id) throws Exception {
-
-        String sql = "DELETE FROM inventory WHERE toolId = ?;";
-
-        this.dbConnection.setAutoCommit(false);
-
-        super.delete("tools", id);
-
+        String sql = "SELECT * FROM tools WHERE name = ?;";
         PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
-        pstmt.setInt(1, id);
+        pstmt.setString(1, name);
 
-        pstmt.executeUpdate();
-
-        this.dbConnection.commit();
-        this.dbConnection.setAutoCommit(true);
+        ResultSet result = pstmt.executeQuery();
+        return new Tool(result.getString("name"), result.getInt("id"));
     }
+
 }

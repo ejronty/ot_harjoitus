@@ -8,12 +8,16 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 ## Suunnitellut tominnallisuudet
 
 * Koska kyseessä on työpöytäsovellus, ei tässä vaiheessa toteuteta käyttäjänhallintaa. Sovellusta oletetaan käytettävän yksityisellä laitteella.
-* Alla alustavia ideoita sovelluksen toiminnallisuuksiin. Kaikkea ei välttämättä toteuteta kurssin aikana.
 
 #### Aloitusnäkymä
 * Valikko
     * Toimipisteet/Työvälineet
     * Toimintopainikkeet
+        * näytä
+        * luo uusi
+        * muokkaa
+        * poista
+        * liitä
     * Lopetus
 * Työvälineiden listaus
 
@@ -21,22 +25,20 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 * Työvälineen
     * ~~lisääminen~~ tehty
     * ~~uudelleennimeäminen~~ tehty
-    * poistaminen
+    * ~~poistaminen~~ tehty
+    * ~~toimipisteeseen yhdistäminen~~ tehty
+    * yhdistettyjen toimipisteiden listaus
 
 * Toimipisteen
     * ~~lisääminen~~ tehty
     * ~~uudelleennimeäminen~~ tehty
-    * poistaminen
-
-* ~~Työvälineen lisääminen toimipisteeseen~~ tehty
-
-* ~~Työvälineiden listaus~~ tehty
-    * ~~nimen perusteella~~
-    * ~~toimipisteittäin~~
+    * ~~poistaminen~~ tehty
+    * työvälineen lisääminen
+    * yhdistettyjen työvälineiden listaus
     
 #### Muita vaatimuksia
-* Graafinen käyttöliittymä
-* Tiedon tallentaminen (tietokanta)
+* ~~Graafinen käyttöliittymä~~ tehty
+* ~~Tiedon tallentaminen (tietokanta)~~ tehty
 
 
 #### Jatkokehitysideoita

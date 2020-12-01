@@ -37,4 +37,12 @@ public class Office extends Thing {
 
         return false;
     }
+    
+    public boolean removeTool(Tool tool) {
+        if (this.tools.contains(tool)) {
+            this.tools.remove(tool);
+            return true;
+        }
+        return false;
+    }
 }

@@ -11,5 +11,5 @@ public interface OfficeDao extends ThingDao {
 
     Office findByName(String name) throws Exception;
 
-    void delete(int id) throws Exception;
+    void updateToolList(Office office) throws Exception;
 }

@@ -19,4 +19,6 @@
 | 28.11 | 5.5 | GUI:n ja tietokannan säätöä. |
 | 29.11 | 6.5 | GUI:n ja tietokannan kehitystä. Refaktorointia. |
 | 30.11 | 10 | Dao-luokkien kehitystä ja sovelluksen refaktorointia. |
-| yht | 68.5 | |
+| 1.12 | 1 | Käyttäjän syötteen tarkistuksia. |
+|  | 8.5 | Tietokantaskeeman muutos, sovelluksen uusi refaktorointi. Lisää toimintoja. | 
+| yht | 78 | |
