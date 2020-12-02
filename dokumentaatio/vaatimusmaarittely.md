@@ -34,7 +34,7 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
     * ~~uudelleennimeäminen~~ tehty
     * ~~poistaminen~~ tehty
     * työvälineen lisääminen
-    * yhdistettyjen työvälineiden listaus
+    * ~~yhdistettyjen työvälineiden listaus~~ tehty
     
 #### Muita vaatimuksia
 * ~~Graafinen käyttöliittymä~~ tehty

@@ -12,15 +12,25 @@ Sovellus on tarkoitettu käytettäväksi yksityisellä laitteella, eikä se sis�
 
 [Työaikakirjanpito](https://github.com/ejronty/ot_harjoitus/blob/master/dokumentaatio/tuntikirjanpito.md)
 
+### Releaset
+
+[Viikko 5](https://github.com/ejronty/ot_harjoitus/releases/tag/Viikko5)
+
 ### Komentorivikomennot
 #### Sovelluksen suorittaminen
 Sovelluksen voi suorittaa komentoriviltä komennolla
 
 ```
-mvn compile exec:java -Dexec.mainClass=tyovalinekirjanpito.ui.TextUI
+mvn compile exec:java -Dexec.mainClass=tyovalinekirjanpito.ui.Main
 ```
 
-Sovelluksen voi suorittaa myös Netbeansissa. Tällöin täytyy main-luokaksi valita TextUI. Muut vaihtoehdot liittyvät graafiseen käyttöliittymään, joka ei vielä toimi.
+#### Suoritettavan jarin generointi
+Sovelluksesta voi generoida myös suoritettavan jar-tiedoston komennolla:
+```
+mvn package
+```
+Komento luo hakemistoon *target* suoritettavan jar-tiedoston nimellä tyovalinekirjanpito-1.0-SNAPSHOT.jar
+
 #### Testaus
 Projektin testit suoritaan komennolla
 
@@ -32,3 +42,12 @@ Testikattavuusraportin saa luotua komennolla
 ```
 mvn test jacoco:report
 ```
+Raportti löytyy tiedostosta *target/site/jacoco/index.html*.
+
+#### Checkstyle
+
+Tiedoston checkstyle.xml määrittämät koodin laatutarkistukset saa suoritettua komennolla:
+```
+mvn jxr:jxr checkstyle:checkstyle
+```
+Tarkistuksen tulos löytyy tiedostosta *target/site/checkstyle.html*.
