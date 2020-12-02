@@ -21,5 +21,5 @@
 | 30.11 | 10 | Dao-luokkien kehitystä ja sovelluksen refaktorointia. |
 | 1.12 | 1 | Käyttäjän syötteen tarkistuksia. |
 |  | 8.5 | Tietokantaskeeman muutos, sovelluksen uusi refaktorointi. Lisää toimintoja. | 
-| 2.12 | 7 | Testailuokkien päivitys, lisää testejä, dokumentaation päivitys ym. |
+| 2.12 | 7 | Testiluokkien päivitys, lisää testejä, dokumentaation päivitys ym. |
 | yht | 85 | |
