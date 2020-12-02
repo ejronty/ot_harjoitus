@@ -1,7 +1,7 @@
 # Arkkitehtuurikuvaus
 
 ## Rakenne
-Alla karkea hahmotelma ohjelman rakenteesta. Dao pakkaukseen on merkitty vain rajapinnat, koska kunnolliset toteutukset vielä uupuvat.
+Alla karkea hahmotelma ohjelman rakenteesta. Dao pakkaukseen on merkitty vain rajapinnat.
 
 ![rakenne](kuvat/rakenne.png)
 
