@@ -66,10 +66,7 @@ public class InventoryUI extends Application{
         
         window.setScene(scene);
         window.show();
-    }
-    
-// Alla suunniteltuja metodeja, joita tullaan 
-//    tarvitsemaan käyttöliittymään.    
+    }  
 
     private VBox createMainMenu() {
         VBox mainMenu = new VBox();
@@ -91,8 +88,12 @@ public class InventoryUI extends Application{
             Object selection = this.listNode.getSelectionModel().getSelectedItem();
             if (selection == null) {
                 redrawContent(selectionMessage());
+                return;
+            }
+            if (this.getTableSelection().equals("tools")) {
+                redrawContent(notYetReadyMessage());
             } else {
-                System.out.println("Jee");
+                redrawContent(showToolsInOfficeView(selection.toString()));
             }
         });
         
@@ -135,6 +136,10 @@ public class InventoryUI extends Application{
             Object selection = this.listNode.getSelectionModel().getSelectedItem();
             if (selection == null) {
                 redrawContent(selectionMessage());
+                return;
+            } 
+            if (this.getTableSelection().equals("offices")) {
+                redrawContent(notYetReadyMessage());
             } else {
                 redrawContent(addToolToOfficeView(selection.toString()));
             }
@@ -280,6 +285,19 @@ public class InventoryUI extends Application{
                 q_part_3, list, submitButton);
         return vbox;
     }
+    
+    private VBox showToolsInOfficeView(String name) {
+        VBox wrapper = new VBox();
+        Label msg1 = new Label("Toimipisteeseen");
+        Label msg2 = new Label(name);
+        Label msg3 = new Label("liitetyt välineet:");
+
+        ListView<String> list = new ListView<>();
+        list.getItems().addAll(this.service.findToolsInOffice(name));
+ 
+        wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), list);
+        return wrapper;
+    }
 
     private VBox selectionMessage() {
         VBox wrapper = new VBox();
@@ -308,6 +326,15 @@ public class InventoryUI extends Application{
         wrapper.getChildren().addAll(msg, new Label(), instruction);
         return wrapper;
     }
+    
+    private VBox notYetReadyMessage() {
+        VBox wrapper = new VBox();
+        Label msg = new Label("Toiminto ei ole");
+        Label ant = new Label("vielä valmis.");
+
+        wrapper.getChildren().addAll(msg, ant);
+        return wrapper;
+    }
 
     private Tooltip getTooltip() {
         return new Tooltip("[a-ö], [0-9],  , -, _");
@@ -333,8 +360,7 @@ public class InventoryUI extends Application{
 
     @Override
     public void stop() {
-        //Tietokannan sulku jotenkin?
-        System.out.println("kanta pitäisi sulkea");
+        //Tietokannan sulku vielä?
         Platform.exit();
     }
     
