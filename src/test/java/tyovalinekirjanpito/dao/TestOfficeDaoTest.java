@@ -45,5 +45,20 @@ public class TestOfficeDaoTest {
         assertEquals(office, officeDao.findByName("warehouse"));
     }
     
+    @Test
+    public void officeCanBeRenamed() throws Exception {
+        Office office = officeDao.findByName("warehouse");
+        
+        officeDao.rename("test", office.getId(), "main office");
+        
+        assertEquals("main office", office.getName());
+    }
+    
+    @Test
+    public void officeCanBeDeleted() throws Exception {
+        officeDao.delete("test", 1);
+        assertNull(officeDao.findByName("warehouse"));
+    }
+    
     
 }
