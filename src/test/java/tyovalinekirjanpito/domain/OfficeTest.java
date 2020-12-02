@@ -58,7 +58,7 @@ public class OfficeTest {
         ArrayList<Tool> tools = new ArrayList<>();
         tools.add(tool);
         tools.add(new Tool("drill"));
-        tools.add(new Tool("sdrewdriver"));
+        tools.add(new Tool("screwdriver"));
         
         office.setTools(tools);
         assertEquals(3, office.getTools().size());

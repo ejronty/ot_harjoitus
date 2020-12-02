@@ -45,4 +45,14 @@ public class Office extends Thing {
         }
         return false;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Office)) {
+            return false;
+        }
+        
+        Office other = (Office) obj;
+        return this.name.equalsIgnoreCase(other.getName());
+    }
 }

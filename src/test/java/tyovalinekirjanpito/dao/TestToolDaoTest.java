@@ -9,28 +9,22 @@ import tyovalinekirjanpito.domain.Tool;
 
 
 public class TestToolDaoTest {
-    
+
     ToolDao toolDao;
     Tool tool;
-    
+
     @Before
     public void setUp() {
         toolDao = new TestToolDao();
-        tool = new Tool("hammer");
-        
+        tool = new Tool("hammer", 1);
+
         try {
-            toolDao.create(tool);
+            toolDao.create("test", "hammer");
         } catch (Exception e) {
             // Do nothing
         }
     }
-    
-    @Test
-    public void creatingANewToolReturnsTheTool() throws Exception {
-        Tool newTool = new Tool("drill");
-        assertEquals(newTool, toolDao.create(newTool));
-    }
-    
+
     @Test
     public void daoRemembersTheCreatedTool() throws Exception{
         assertTrue(toolDao.getAll().contains(tool));
@@ -38,27 +32,17 @@ public class TestToolDaoTest {
     
     @Test
     public void allToolsCanBeObtainedAtOnce() throws Exception {
-        toolDao.create(new Tool("drill"));
-        toolDao.create(new Tool("screwdriver"));
+        toolDao.create("test", "drill");
+        toolDao.create("test", "screwdriver");
         
         assertEquals(3, toolDao.getAll().size());
     }
     
     @Test
     public void theSameToolWillNotBeRememberedTwice() throws Exception {
-        toolDao.create(tool);
+        toolDao.create("test", "hammer");
         
         assertEquals(1, toolDao.getAll().size());
-    }
-    
-    @Test
-    public void daoReturnsTrueIfToolExists() throws Exception {
-        assertTrue(toolDao.exists("hammer"));
-    }
-    
-    @Test
-    public void daoReturnsFalseIfToolDoesNotExist() throws Exception {
-        assertFalse(toolDao.exists("drill"));
     }
     
     @Test
@@ -71,10 +55,11 @@ public class TestToolDaoTest {
         assertNull(toolDao.findByName("drill"));
     }
     
-    @Test
-    public void toolsCanBeRenamed() throws Exception {
-        toolDao.rename(tool.getName(), "drill");
+    @Test public void toolsCanBeRenamed() throws Exception {
+        Tool tool = toolDao.findByName("hammer");
         
-        assertEquals(tool, toolDao.findByName("drill"));
+        toolDao.rename("test", tool.getId(), "drill");
+        
+        assertEquals("drill", tool.getName());
     }
 }

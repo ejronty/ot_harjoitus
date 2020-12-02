@@ -13,40 +13,47 @@ import tyovalinekirjanpito.domain.Tool;
 
 public class TestToolDao implements ToolDao {
     
-    private TreeMap<String, Tool> tools;
+    private TreeMap<Integer, Tool> tools;
+    private int counter;
     
     public TestToolDao() {
         this.tools = new TreeMap<>();
+        this.counter = 1;
     }
 
     @Override
-    public Tool create(Tool tool) throws Exception {
-        this.tools.put(tool.getName(), tool);
-        return tool;
-    }
-
-    @Override
-    public Collection<Tool> getAll() {
+    public Collection<Tool> getAll() throws Exception {
         return this.tools.values();
     }
 
     @Override
     public Tool findByName(String name) throws Exception {
-        return this.tools.get(name);
-    }
-    
-    @Override
-    public boolean exists(String name) {
-        return this.tools.containsKey(name);
+        return this.getAll()
+                .stream()
+                .filter(tool -> tool.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public void rename(String oldName, String newName) throws Exception {
-        Tool tool = this.tools.get(oldName);
-        tool.setName(newName);
-        
-        this.tools.remove(oldName);
-        this.tools.put(newName, tool);
+    public void create(String table, String name) throws Exception {
+        if (this.findByName(name) == null) {
+            Tool tool = new Tool(name, this.counter);
+            this.counter++;
+            this.tools.put(tool.getId(), tool);
+        }
     }
+
+    @Override
+    public void rename(String table, int id, String newName) throws Exception {
+        this.tools.get(id).setName(newName);
+    }
+
+    @Override
+    public void delete(String table, int id) throws Exception {
+        this.tools.remove(id);
+    }
+
+    
     
 }
