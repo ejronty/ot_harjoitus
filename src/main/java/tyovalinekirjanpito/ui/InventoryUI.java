@@ -91,7 +91,7 @@ public class InventoryUI extends Application{
                 return;
             }
             if (this.getTableSelection().equals("tools")) {
-                redrawContent(notYetReadyMessage());
+                redrawContent(showOfficesWithToolView(selection.toString()));
             } else {
                 redrawContent(showToolsInOfficeView(selection.toString()));
             }
@@ -265,6 +265,7 @@ public class InventoryUI extends Application{
         Label q_part_3 = new Label("liitetään?");
         
         ListView<String> list = new ListView();
+        list.setMaxWidth(180);
         list.getItems().addAll(this.service.findOfficesWithoutTool(name));
         
         Button submitButton = new Button("Valitse");
@@ -293,9 +294,29 @@ public class InventoryUI extends Application{
         Label msg3 = new Label("liitetyt välineet:");
 
         ListView<String> list = new ListView<>();
+        list.setMaxHeight(200);
+        list.setMaxWidth(180);
         list.getItems().addAll(this.service.findToolsInOffice(name));
  
         wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), list);
+        return wrapper;
+    }
+    
+    private VBox showOfficesWithToolView(String name) {
+        VBox wrapper = new VBox();
+        Label msg1 = new Label("Työväline");
+        Label msg2 = new Label(name);
+        Label msg3 = new Label("löytyy seuraavista");
+        Label msg4 = new Label("toimipisteistä:");
+
+        ListView<String> list = new ListView<>();
+        list.setMaxWidth(180);
+        list.setMaxHeight(200);
+        list.getItems().addAll(this.service.findOfficesContainingTool(name));
+
+        wrapper.getChildren().addAll(msg1, msg2, msg3, msg4,
+                new Label(""), list);
+
         return wrapper;
     }
 
