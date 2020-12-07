@@ -22,4 +22,5 @@
 | 1.12 | 1 | Käyttäjän syötteen tarkistuksia. |
 |  | 8.5 | Tietokantaskeeman muutos, sovelluksen uusi refaktorointi. Lisää toimintoja. | 
 | 2.12 | 7 | Testiluokkien päivitys, lisää testejä, dokumentaation päivitys ym. |
-| yht | 85 | |
+| 7.12 | 1 | Debuggausta. |
+| yht | 86 | |

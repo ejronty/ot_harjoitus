@@ -45,6 +45,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
         ResultSet result = pstmt.executeQuery();
         Office office = new Office(result.getString("name"), result.getInt("id"));
         for (String tool : result.getString("tools").split(":")) {
+            if (tool.equals("")) {
+                continue;
+            }
             office.addTool(new Tool(tool));
         }
         return office;
