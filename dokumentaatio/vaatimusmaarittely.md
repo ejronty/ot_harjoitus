@@ -27,13 +27,15 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
     * ~~uudelleennimeäminen~~ tehty
     * ~~poistaminen~~ tehty
     * ~~toimipisteeseen yhdistäminen~~ tehty
-    * yhdistettyjen toimipisteiden listaus
+    * ~~toimipisteestä poistaminen~~ tehty
+    * ~~yhdistettyjen toimipisteiden listaus~~ tehty
 
 * Toimipisteen
     * ~~lisääminen~~ tehty
     * ~~uudelleennimeäminen~~ tehty
     * ~~poistaminen~~ tehty
-    * työvälineen lisääminen
+    * ~~työvälineen lisääminen~~ tehty
+    * ~~työvälineen poistaminen~~ tehty
     * ~~yhdistettyjen työvälineiden listaus~~ tehty
     
 #### Muita vaatimuksia

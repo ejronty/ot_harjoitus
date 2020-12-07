@@ -23,5 +23,5 @@
 |  | 8.5 | Tietokantaskeeman muutos, sovelluksen uusi refaktorointi. Lisää toimintoja. | 
 | 2.12 | 7 | Testiluokkien päivitys, lisää testejä, dokumentaation päivitys ym. |
 | 7.12 | 1 | Debuggausta. |
-|  | 3 | Käyttöliittymän parantelua. |
-| yht | 89 | |
+|  | 3.5 | Käyttöliittymän parantelua. |
+| yht | 89.5 | |
