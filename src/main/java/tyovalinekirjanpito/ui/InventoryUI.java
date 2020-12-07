@@ -48,22 +48,22 @@ public class InventoryUI extends Application{
     @Override
     public void start(Stage window) {
         window.setTitle("Työvälinekirjanpito");
-        
+
         HBox layout = new HBox();
         layout.setSpacing(10);
-        
+
         menuNode = createMainMenu();
         listNode = drawListedItems();
         contentNode = new VBox();
         contentNode.setSpacing(5);
         contentNode.setPadding(new Insets(5));
-        
+
         layout.getChildren().add(menuNode);
         layout.getChildren().add(listNode);
         layout.getChildren().add(contentNode);
-        
+
         Scene scene = new Scene(layout, 600, 400);
-        
+
         window.setScene(scene);
         window.show();
     }  
@@ -72,7 +72,7 @@ public class InventoryUI extends Application{
         VBox mainMenu = new VBox();
         mainMenu.setSpacing(5);
         mainMenu.setPadding(new Insets(5));
-        
+
         ChoiceBox toolOrOffice = new ChoiceBox();
         toolOrOffice.getItems().addAll("Työvälineet", "Toimipisteet");
         toolOrOffice.setValue("Työvälineet");
@@ -81,7 +81,7 @@ public class InventoryUI extends Application{
             redrawList();
             redrawContent(new VBox());
         });
-        
+
         Button displayButton = new Button("Näytä");
         displayButton.setMaxWidth(Double.MAX_VALUE);
         displayButton.setOnAction(e -> {
@@ -96,14 +96,14 @@ public class InventoryUI extends Application{
                 redrawContent(showToolsInOfficeView(selection.toString()));
             }
         });
-        
+
         Button addButton = new Button("Luo uusi");
         addButton.setMaxWidth(Double.MAX_VALUE);
         addButton.setOnAction(e -> {
             VBox content = createNewItemView();
             redrawContent(content);
         });
-        
+
         Button editButton = new Button("Muokkaa");
         editButton.setMaxWidth(Double.MAX_VALUE);
         editButton.setOnAction(e -> {
@@ -116,7 +116,7 @@ public class InventoryUI extends Application{
             }
             redrawContent(content);
         });
-        
+
         Button deleteButton = new Button("Poista");
         deleteButton.setMaxWidth(Double.MAX_VALUE);
         deleteButton.setOnAction(e -> {
@@ -129,7 +129,7 @@ public class InventoryUI extends Application{
             }
             redrawContent(content);
         });
-        
+
         Button joinButton = new Button("Liitä");
         joinButton.setMaxWidth(Double.MAX_VALUE);
         joinButton.setOnAction(e -> {
@@ -139,18 +139,18 @@ public class InventoryUI extends Application{
                 return;
             } 
             if (this.getTableSelection().equals("offices")) {
-                redrawContent(notYetReadyMessage());
+                redrawContent(joinOfficeAndToolView(selection.toString()));
             } else {
                 redrawContent(addToolToOfficeView(selection.toString()));
             }
         });
-        
+
         Button quitButton = new Button("Lopeta");
         quitButton.setMaxWidth(Double.MAX_VALUE);
         quitButton.setOnAction(e -> {
             this.stop();
         });
-        
+
         mainMenu.getChildren().add(toolOrOffice);
         mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(displayButton);
@@ -166,27 +166,27 @@ public class InventoryUI extends Application{
         mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(new Label(""));
         mainMenu.getChildren().add(quitButton);
-        
+
         return mainMenu;
     }
 
     private ListView drawListedItems() {
         ListView<String> list = new ListView<>();
         list.getItems().addAll(this.service.getItemList(this.getTableSelection()));
-        
+
         return list;
     }
-    
+
     private void redrawList() {
         this.listNode.getItems().clear();
         this.listNode.getItems().addAll(this.service.getItemList(this.getTableSelection()));
     }
-    
+
     private void redrawContent(VBox newContent) {
         this.contentNode.getChildren().clear();
         this.contentNode.getChildren().addAll(newContent.getChildren());
     }
-    
+
     private VBox createNewItemView() {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
@@ -207,15 +207,15 @@ public class InventoryUI extends Application{
         vbox.getChildren().addAll(guide, nameField, createButton);
         return vbox;
     }
-    
+
     private VBox editItemView(String name) {
         VBox node = new VBox();
         node.setSpacing(5);
-        
+
         Label text = new Label("Muutetaan kohdetta");
         Label oldName = new Label(name);
         Label guide = new Label("Anna uusi nimi");
-        
+
         TextField nameField = new TextField();
         nameField.setTooltip(getTooltip());
         Button submitButton = new Button("Muuta");
@@ -232,7 +232,7 @@ public class InventoryUI extends Application{
                 guide, nameField, submitButton);
         return node;
     }
-    
+
     private VBox deleteItemView(String name) {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
@@ -254,26 +254,26 @@ public class InventoryUI extends Application{
 
         return vbox;
     }
-    
+
     private VBox addToolToOfficeView(String name) {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
-        
+
         Label q_part_1 = new Label("Mihin toimipisteeseen");
         Label q_part_2 = new Label("väline");
         Label itemName = new Label(name);
         Label q_part_3 = new Label("liitetään?");
-        
+
         ListView<String> list = new ListView();
         list.setMaxWidth(180);
         list.getItems().addAll(this.service.findOfficesWithoutTool(name));
-        
+
         Button submitButton = new Button("Valitse");
         submitButton.setOnAction(e -> {
             String officeName = list.getSelectionModel().getSelectedItem();
             if (officeName != null) {
                 if (this.service.addToolToOffice(officeName, name)) {
-                    redrawContent(new VBox());
+                    redrawContent(showOfficesWithToolView(name));
                 } else {
                     redrawContent(basicErrorMessage());
                 }
@@ -281,12 +281,44 @@ public class InventoryUI extends Application{
                 redrawContent(selectionMessage());
             }
         });
-        
+
         vbox.getChildren().addAll(q_part_1, q_part_2, itemName, 
                 q_part_3, list, submitButton);
         return vbox;
     }
-    
+
+    private VBox joinOfficeAndToolView(String name) {
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+
+        Label msg1 = new Label("Mikä työväline");
+        Label msg2 = new Label("toimipisteeseen");
+        Label msg3 = new Label(name);
+        Label msg4 = new Label("liitetään?");
+
+        ListView<String> list = new ListView();
+        list.setMaxWidth(180);
+        list.getItems().addAll(this.service.findToolsNotInOffice(name));
+
+        Button submitButton = new Button("Valitse");
+        submitButton.setOnAction(e -> {
+            String itemName = list.getSelectionModel().getSelectedItem();
+            if (itemName != null) {
+                if (this.service.addToolToOffice(name, itemName)) {
+                    redrawContent(showToolsInOfficeView(name));
+                } else {
+                    redrawContent(basicErrorMessage());
+                }
+            } else {
+                redrawContent(selectionMessage());
+            }
+        });
+
+        vbox.getChildren().addAll(msg1, msg2, msg3, msg4, 
+                list, submitButton);
+        return vbox;
+    }
+
     private VBox showToolsInOfficeView(String name) {
         VBox wrapper = new VBox();
         Label msg1 = new Label("Toimipisteeseen");
@@ -297,11 +329,11 @@ public class InventoryUI extends Application{
         list.setMaxHeight(200);
         list.setMaxWidth(180);
         list.getItems().addAll(this.service.findToolsInOffice(name));
- 
+
         wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), list);
         return wrapper;
     }
-    
+
     private VBox showOfficesWithToolView(String name) {
         VBox wrapper = new VBox();
         Label msg1 = new Label("Työväline");
@@ -347,7 +379,7 @@ public class InventoryUI extends Application{
         wrapper.getChildren().addAll(msg, new Label(), instruction);
         return wrapper;
     }
-    
+
     private VBox notYetReadyMessage() {
         VBox wrapper = new VBox();
         Label msg = new Label("Toiminto ei ole");
@@ -384,11 +416,11 @@ public class InventoryUI extends Application{
         //Tietokannan sulku vielä?
         Platform.exit();
     }
-    
+
     public static void main(String[] args) {
         launch(InventoryUI.class);
     }
-    
+
     private Connection setUpDB() {
 
         Properties properties = new Properties();
