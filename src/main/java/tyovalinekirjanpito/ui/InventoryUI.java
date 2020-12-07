@@ -330,7 +330,22 @@ public class InventoryUI extends Application{
         list.setMaxWidth(180);
         list.getItems().addAll(this.service.findToolsInOffice(name));
 
-        wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), list);
+        Button removeButton = new Button("Poista valittu");
+        removeButton.setOnAction(e -> {
+            String selection = list.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                redrawContent(selectionMessage());
+                return;
+            }
+            if (this.service.removeToolFromOffice(name, selection)) {
+                redrawContent(showToolsInOfficeView(name));
+            } else {
+                redrawContent(basicErrorMessage());
+            }
+        });
+
+        wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), 
+                list, new Label(""), removeButton);
         return wrapper;
     }
 
@@ -346,8 +361,22 @@ public class InventoryUI extends Application{
         list.setMaxHeight(200);
         list.getItems().addAll(this.service.findOfficesContainingTool(name));
 
+        Button removeButton = new Button("Poista valittu");
+        removeButton.setOnAction(e -> {
+            String selection = list.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                redrawContent(selectionMessage());
+                return;
+            }
+            if (this.service.removeToolFromOffice(selection, name)) {
+                redrawContent(showOfficesWithToolView(name));
+            } else {
+                redrawContent(basicErrorMessage());
+            }
+        });
+
         wrapper.getChildren().addAll(msg1, msg2, msg3, msg4,
-                new Label(""), list);
+                new Label(""), list, new Label(""), removeButton);
 
         return wrapper;
     }
