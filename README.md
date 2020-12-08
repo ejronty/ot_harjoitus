@@ -6,6 +6,8 @@ Sovellus on tarkoitettu käytettäväksi yksityisellä laitteella, eikä se sis�
 
 ### Dokumentaatio
 
+[Käyttöohje](https://github.com/ejronty/ot_harjoitus/blob/master/dokumentaatio/kayttoohje.md)
+
 [Vaatimusmäärittely](https://github.com/ejronty/ot_harjoitus/blob/master/dokumentaatio/vaatimusmaarittely.md)
 
 [Arkkitehtuurikuvaus](https://github.com/ejronty/ot_harjoitus/blob/master/dokumentaatio/arkkitehtuuri.md)
@@ -13,6 +15,8 @@ Sovellus on tarkoitettu käytettäväksi yksityisellä laitteella, eikä se sis�
 [Työaikakirjanpito](https://github.com/ejronty/ot_harjoitus/blob/master/dokumentaatio/tuntikirjanpito.md)
 
 ### Releaset
+
+[Viikko 6](https://github.com/ejronty/ot_harjoitus/releases/tag/viikko6)
 
 [Viikko 5](https://github.com/ejronty/ot_harjoitus/releases/tag/Viikko5)
 
@@ -51,3 +55,10 @@ Tiedoston checkstyle.xml määrittämät koodin laatutarkistukset saa suoritettu
 mvn jxr:jxr checkstyle:checkstyle
 ```
 Tarkistuksen tulos löytyy tiedostosta *target/site/checkstyle.html*.
+
+#### JavaDoc
+JavaDoc generoidaan komennolla
+```
+mvn javadoc:javadoc
+```
+Generoidun JavaDocin löytää polusta *target/site/apidocs/index.html*
