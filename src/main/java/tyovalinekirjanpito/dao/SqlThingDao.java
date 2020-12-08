@@ -4,10 +4,10 @@ package tyovalinekirjanpito.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-/*
-  Tämän luokan tarkoitus on hoitaa ne tietokantatoiminnot, jotka olisivat
-  muuten hyvin toisteisia toimipisteiden ja työvälineiden välillä.
-*/
+/**
+ * Työvälineiden ja toimipisteiden yhteisistä tietokantatoiminnoista
+ * vastaava luokka. Tarkoitettu täsmällisempien luokkien perittäväksi.
+ */
 
 public class SqlThingDao implements ThingDao {
 
@@ -17,6 +17,12 @@ public class SqlThingDao implements ThingDao {
         this.dbConnection = connection;
     }
 
+    /**
+     * Lisää tietokantaan uuden kohteen tiedot.
+     * 
+     * @param table Käsiteltävä tietokantataulu.
+     * @param name Lisättävän kohteen nimi.
+     */
     @Override
     public void create(String table, String name) throws Exception {
 
@@ -28,6 +34,13 @@ public class SqlThingDao implements ThingDao {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Muuttaa tietokannassa olevan kohteen nimen.
+     * 
+     * @param table Käsiteltävä tietokantataulu.
+     * @param id Muutettavan kohteen tunnus.
+     * @param newName Kohteelle annettava uusi nimi.
+     */
     @Override
     public void rename(String table, int id, String newName) throws Exception {
 
@@ -41,6 +54,12 @@ public class SqlThingDao implements ThingDao {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Poistaa kohteen tietokannasta.
+     * 
+     * @param table Käsiteltävä tietokantataulu.
+     * @param id Poistettavan kohteen tunnus.
+     */
     @Override
     public void delete(String table, int id) throws Exception {
 

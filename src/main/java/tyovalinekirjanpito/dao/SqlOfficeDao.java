@@ -10,6 +10,9 @@ import java.util.Collection;
 import tyovalinekirjanpito.domain.Office;
 import tyovalinekirjanpito.domain.Tool;
 
+/**
+ * Toimipisteiden tietokantatoiminnoista vastaava luokka.
+ */
 
 public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
 
@@ -17,6 +20,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
         super(connection);
     }
 
+    /**
+     * Hakee tietokannasta kaikki toimipisteet työvälineineen.
+     */
     @Override
     public Collection<Office> getAll() throws Exception {
 
@@ -35,6 +41,11 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
         return list;
     }
 
+    /**
+     * Etsii tietokannasta annetun nimisen toimipisteen.
+     * 
+     * @param name Etsittävän toimipisteen nimi.
+     */
     @Override
     public Office findByName(String name) throws Exception {
 
@@ -53,6 +64,11 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
         return office;
     }    
 
+    /**
+     * Päivittää annetun toimipisteen työvälineet tietokantaan.
+     * 
+     * @param office Toimipiste, jonka työvälineista päivitetään.
+     */
     @Override
     public void updateToolList(Office office) throws Exception {
 

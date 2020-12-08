@@ -1,10 +1,11 @@
 
 package tyovalinekirjanpito.domain;
 
-/*
-  Yleistä 'asiaa' kuvaava luokka. Tämän on tarkoitus toteuttaa ohjelman
-  luokille yhteiset metodit, ja täten vähentää koodin toisteisuutta.
-*/
+/**
+ * Yleistä 'asiaa' kuvaava luokka. Tämän on tarkoitus toteuttaa ohjelman
+ * luokille yhteiset metodit, ja täten vähentää koodin toisteisuutta.
+ */
+
 public class Thing {
     
     protected String name;

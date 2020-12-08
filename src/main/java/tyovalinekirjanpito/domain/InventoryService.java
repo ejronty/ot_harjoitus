@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.ToolDao;
 
-/*
-  Tästä on tarkoitus muotoutua sovelluslogiikasta huolehtiva luokka.
-*/
+/**
+ * Sovelluslogiikasta huolehtiva luokka. Monet luokan metodeista
+ * käsittelevät sekä työvälineitä että toimipisteitä, sillä 
+ * molemmissa tapauksessa logiikka olisi hyvin samanlainen.
+ */
 public class InventoryService {
 
     private ToolDao toolDao;
@@ -20,6 +22,14 @@ public class InventoryService {
         this.officeDao = officeDao;
     }
 
+    /**
+     * Uuden asian luomiseen käytettävä metodi.
+     * 
+     * @param table tietokantataulu, johon tietoa halutaan lisätä.
+     * Tämä ei tule käyttäjän syötteestä, vaan käyttöliittymä huolehtii
+     * lähetettävän arvon valinnasta.
+     * @param itemName Lisättävän kohteen nimi.
+     */
     public boolean create(String table, String itemName) {
         String name = this.processInput(itemName);
 
@@ -35,6 +45,15 @@ public class InventoryService {
         return true;
     }
     
+    /**
+     * Kohteen uudelleennimeämiseen käytettävä metodi.
+     * 
+     * @param table Uudelleennimettävän asian tyyppi, työväline vai 
+     * toimipiste. Ei käyttäjän syöte.
+     * @param oldName Nimi, jolla muokattava kohde tällä hetkellä
+     * esiintyy ohjelmassa.
+     * @param newName Käyttäjän syöttämä uusi nimi kohteelle.
+     */
     public boolean rename(String table, String oldName, String newName) {
         String name = this.processInput(newName);
 
@@ -64,6 +83,12 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Kohteen poistamiseen tarkoitettu metodi.
+     * 
+     * @param table Poistettavan kohteen tyyppi. Ei käyttäjän syöte.
+     * @param name Poistettavan kohteen nimi.
+     */
     public boolean delete(String table, String name) {
 
         try {
@@ -90,6 +115,13 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Työvälineen lisääminen toimipisteeseen.
+     * 
+     * @param officeName Sen toimipisteen nimi, johon työväline halutaan
+     * lisätä.
+     * @param toolName Lisättävän työvälineen nimi.
+     */
     public boolean addToolToOffice(String officeName, String toolName) {
 
         try {
@@ -104,7 +136,14 @@ public class InventoryService {
         }
         return true;
     }
-    
+
+    /**
+     * Työvälineen poistaminen toimipisteestä.
+     * 
+     * @param officeName Sen toimipisteen nimi, josta työväline
+     * halutaan poistaa.
+     * @param toolName Poistettavan työvälineen nimi.
+     */
     public boolean removeToolFromOffice(String officeName, String toolName) {
         try {
             Office office = this.officeDao.findByName(officeName);
@@ -119,6 +158,11 @@ public class InventoryService {
         return true;
     }
 
+    /**
+     * Kaikki työvälineet tai toimipisteet.
+     * 
+     * @param type Määrittää, haetaanko työvälineet vai toimipisteet.
+     */
     public Collection<String> getItemList(String type) {
 
         try {
@@ -137,7 +181,12 @@ public class InventoryService {
             return new ArrayList<>();
         }
     }
-    
+
+    /**
+     * Etsii ne toimipisteet, joissa ei vielä ole annettua työvälinettä.
+     * 
+     * @param toolName Työvälineen nimi.
+     */
     public Collection<String> findOfficesWithoutTool(String toolName) {
         try {
             Tool tool = this.toolDao.findByName(toolName);
@@ -150,7 +199,12 @@ public class InventoryService {
             return new ArrayList<>();
         }
     }
-    
+
+    /**
+     * Etsii ne toimipisteet, joissa on annettu työväline.
+     * 
+     * @param toolName Työvälineen nimi.
+     */
     public Collection<String> findOfficesContainingTool(String toolName) {
         try {
             Tool tool = this.toolDao.findByName(toolName);
@@ -163,7 +217,12 @@ public class InventoryService {
             return new ArrayList<>();
         }
     }
-    
+
+    /**
+     * Etsii ne työvälineet, joita ei ole annetussa toimipisteessä.
+     * 
+     * @param officeName Toimipisteen nimi.
+     */
     public Collection<String> findToolsNotInOffice(String officeName) {
         try {
             Office office = this.officeDao.findByName(officeName);
@@ -176,7 +235,12 @@ public class InventoryService {
             return new ArrayList<>();
         }
     }
-    
+
+    /**
+     * Annetusta toimipisteestä löytyvät työvälineet.
+     * 
+     * @param officeName Toimipisteen nimi.
+     */
     public Collection<String> findToolsInOffice(String officeName) {
         try {
             Office office = this.officeDao.findByName(officeName);

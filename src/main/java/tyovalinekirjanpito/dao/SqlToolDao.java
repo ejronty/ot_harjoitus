@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import tyovalinekirjanpito.domain.Tool;
 
+/**
+ * Työvälineiden tietokantatoiminnoista vastaava luokka.
+ */
 
 public class SqlToolDao extends SqlThingDao implements ToolDao {
 
@@ -16,6 +19,9 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
         super(connection);
     }
 
+    /**
+     * Hakee tietokannasta kaikki työvälineet.
+     */
     @Override
     public Collection<Tool> getAll() throws Exception {
 
@@ -30,6 +36,11 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
         return list;
     }
 
+    /**
+     * Etsii tietokannasta työvälineen annetulla nimellä.
+     * 
+     * @param name annetun työvälineen nimi.
+     */
     @Override
     public Tool findByName(String name) throws Exception {
 

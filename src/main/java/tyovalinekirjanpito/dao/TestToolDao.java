@@ -5,11 +5,9 @@ import java.util.Collection;
 import java.util.TreeMap;
 import tyovalinekirjanpito.domain.Tool;
 
-/*
-  Tätä dao-implementaatiota on lopulta tarkoitus käyttää lähinnä
-  testauksessa, mutta se saa kelvata sovelluksen käyttöön vielä,
-  kun tietokantaa ei ole luotu.
-*/
+/**
+ * Muistissa toimiva dao-implementaatio testausta varten.
+ */
 
 public class TestToolDao implements ToolDao {
     
