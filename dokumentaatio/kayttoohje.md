@@ -9,7 +9,7 @@ Ohjelma olettaa, että suoritushakemistosta löytyy tiedosto config.properties, 
 dbPath=inventory.db
 ```
 
-## Ohjelman käynnnistäminen
+## Ohjelman käynnistäminen
 
 Ohjelma käynnistetään komennolla
 ```
@@ -64,3 +64,7 @@ Prosessi toimii hyvin samankaltaisesti myös toimipisteiden näkymästä.
 Kohteen tiedot (liitetyt työvälineet tai toimipisteet) saa näkyviin valitsemalla kohteen listasta ja painamalla päävalikon nappia 'Näytä'.
 
 ![nayta](kuvat/nayta.png)
+
+## Työvälineen poistaminen toimipisteestä
+
+Työvälineen saa poistettua toimipisteestä näyttämällä kohteen tiedot, valitsemalla näkymästä riippuen poistettavan työvälineen, tai toimipisteen, josta työväline poistetaan, ja painamalla 'Poista valittu'. Kohteen tiedot näyttävä lista päivittyy merkiksi, että poisto on onnistunut.
