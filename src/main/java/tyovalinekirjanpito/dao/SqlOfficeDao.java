@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import tyovalinekirjanpito.domain.Office;
-import tyovalinekirjanpito.domain.Tool;
 
 /**
  * Toimipisteiden tietokantatoiminnoista vastaava luokka.
@@ -33,8 +32,13 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
 
         while (result.next()) {
             Office office = new Office(result.getString("name"), result.getInt("id"));
-            for (String name : result.getString("tools").split(":")) {
-                office.addTool(new Tool(name));
+            for (String info : result.getString("tools").split(":")) {
+                if (info.equals("")) {
+                    continue;
+                }
+                String name = info.split(",")[0];
+                int amount = Integer.parseInt(info.split(",")[1]);
+                office.addTool(name, amount);
             }
             list.add(office);
         }
@@ -55,11 +59,13 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
 
         ResultSet result = pstmt.executeQuery();
         Office office = new Office(result.getString("name"), result.getInt("id"));
-        for (String tool : result.getString("tools").split(":")) {
-            if (tool.equals("")) {
+        for (String toolInfo : result.getString("tools").split(":")) {
+            if (toolInfo.equals("")) {
                 continue;
             }
-            office.addTool(new Tool(tool));
+            String toolName = toolInfo.split(",")[0];
+            int amount = Integer.parseInt(toolInfo.split(",")[1]);
+            office.addTool(toolName, amount);
         }
         return office;
     }    
@@ -76,9 +82,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
                     + "WHERE id = ?;";
 
         String tools = "";
-        tools = office.getTools()
+        tools = office.getToolNames()
                     .stream()
-                    .map(tool -> tool.getName() + ":")
+                    .map(name -> name + "," + office.getAmount(name) + ":")
                     .reduce(tools, String::concat);
 
         PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
