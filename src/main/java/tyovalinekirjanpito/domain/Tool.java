@@ -6,14 +6,18 @@ package tyovalinekirjanpito.domain;
  */
 
 public class Tool extends Thing {
+    
+    private boolean consumable;
 
     /**
-     * Työvälineen luomiseen pelkän nimen perusteella.
+     * Työvälineen luomiseen ilman id:tä.
      * 
-     * @param name Työvälineen nimi
+     * @param name Työvälineen nimi.
+     * @param consumable Onko kyseessä kuluva työväline?
      */
-    public Tool(String name) {
+    public Tool(String name, boolean consumable) {
         super(name);
+        this.consumable = consumable;
     }
 
     /**
@@ -23,10 +27,16 @@ public class Tool extends Thing {
      * 
      * @param name Työvälineen nimi.
      * @param id Työvälineen id-tunnus.
+     * @param consumable Onko kyseessä kuluva työväline?
      * 
      */
-    public Tool(String name, int id) {
+    public Tool(String name, int id, boolean consumable) {
         super(name, id);
+        this.consumable = consumable;
+    }
+
+    public boolean isConsumable() {
+        return consumable;
     }
 
     /**
