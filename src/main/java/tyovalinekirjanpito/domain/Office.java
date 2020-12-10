@@ -59,6 +59,9 @@ public class Office extends Thing {
      * @param amount Montako kappaletta välinettä lisätään.
      */
     public boolean addTool(String toolName, int amount) {
+        if (amount <= 0) {
+            return false;
+        }
         if (!(this.tools.containsKey(toolName))) {
             this.tools.put(toolName, amount);
             return true;
@@ -73,6 +76,11 @@ public class Office extends Thing {
      * @param newAmount Työvälineen uusi määrä.
      */
     public boolean updateAmount(String toolName, int newAmount) {
+        if (newAmount < 0) {
+            return false;
+        } else if (newAmount == 0) {
+            return this.removeTool(toolName);
+        }
         if (this.tools.replace(toolName, newAmount) == null) {
             return false;
         }
