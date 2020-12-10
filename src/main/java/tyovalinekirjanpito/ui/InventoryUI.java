@@ -462,7 +462,8 @@ public class InventoryUI extends Application{
 
             String createTools = "CREATE TABLE IF NOT EXISTS tools (\n"
                                 + "    id integer PRIMARY KEY, \n"
-                                + "    name text NOT NULL UNIQUE \n"
+                                + "    name text NOT NULL UNIQUE, \n"
+                                + "    consumable text NOT NULL \n"
                                 + ");";
 
             String createOffices = "CREATE TABLE IF NOT EXISTS offices (\n"
