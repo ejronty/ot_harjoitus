@@ -10,20 +10,7 @@ public class Tool extends Thing {
     private boolean consumable;
 
     /**
-     * Työvälineen luomiseen ilman id:tä.
-     * 
-     * @param name Työvälineen nimi.
-     * @param consumable Onko kyseessä kuluva työväline?
-     */
-    public Tool(String name, boolean consumable) {
-        super(name);
-        this.consumable = consumable;
-    }
-
-    /**
-     * Luo uuden työvälineen, jolla on nimen lisäksi myös id-tunnus.
-     * Tarkoitettu tilanteeseen, kun työvälineen tiedot luetaan ohjelmaan 
-     * tietokannasta, jolloin myös id on saatavilla.
+     * Luo uuden työvälineen.
      * 
      * @param name Työvälineen nimi.
      * @param id Työvälineen id-tunnus.

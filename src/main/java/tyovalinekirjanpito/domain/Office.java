@@ -13,20 +13,13 @@ public class Office extends Thing {
     private TreeMap<String, Integer> tools;
 
     /**
-     * Luo uuden toimipisteen. Metodia on tarkoitus käyttää, kun toimipiste
-     * luodaan lukemalla tiedot tietokannasta, jolloin mukaan saadaan
-     * myös toimipisteen id-tunnus.
+     * Luo uuden toimipisteen.
      * 
      * @param name Luotavan toimipisteen nimi.
      * @param id Toimipisteen id-tunnus.
      */
     public Office(String name, int id) {
         super(name, id);
-        this.tools = new TreeMap<>();
-    }
-
-    public Office(String name) {
-        super(name);
         this.tools = new TreeMap<>();
     }
 
