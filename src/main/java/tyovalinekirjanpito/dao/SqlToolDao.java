@@ -20,6 +20,46 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
     }
 
     /**
+     * Lisää tietokantaan uuden työvälineen tiedot.
+     * 
+     * @param name Lisättävän kohteen nimi.
+     * @param consumable Onko kyseessä kuluva työväline?
+     */
+    @Override
+    public void create(String name, boolean consumable) throws Exception {
+
+        String sql = "INSERT INTO tools(name, consumable) VALUES(?,?);";
+
+        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
+        pstmt.setString(1, name);
+        pstmt.setString(2, String.valueOf(consumable));
+
+        pstmt.executeUpdate();
+    }
+
+    /**
+     * Muuttaa tietokannassa olevan työvälineen tietoja.
+     * 
+     * @param id Muutettavan kohteen tunnus.
+     * @param newName Kohteelle annettava uusi nimi.
+     * @param consumable Onko kyseessä kuluva työväline?
+     */
+    @Override
+    public void edit(int id, String newName, boolean consumable) throws Exception {
+
+        String sql = "UPDATE tools SET name = ?,"
+                    + "consumable = ?"
+                    + "WHERE id = ?;";
+
+        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
+        pstmt.setString(1, newName);
+        pstmt.setString(2, String.valueOf(consumable));
+        pstmt.setInt(3, id);
+
+        pstmt.executeUpdate();
+    }
+
+    /**
      * Hakee tietokannasta kaikki työvälineet.
      */
     @Override
@@ -31,7 +71,7 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
         ArrayList<Tool> list = new ArrayList<>();
 
         while (result.next()) {
-            list.add(new Tool(result.getString("name"), result.getInt("id")));
+            list.add(new Tool(result.getString("name"), result.getInt("id"), Boolean.valueOf(result.getString("consumable"))));
         }
         return list;
     }
@@ -49,7 +89,7 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
         pstmt.setString(1, name);
 
         ResultSet result = pstmt.executeQuery();
-        return new Tool(result.getString("name"), result.getInt("id"));
+        return new Tool(result.getString("name"), result.getInt("id"), Boolean.valueOf(result.getString("consumable")));
     }
 
 }

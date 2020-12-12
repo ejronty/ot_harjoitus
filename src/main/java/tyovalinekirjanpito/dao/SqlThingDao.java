@@ -18,43 +18,6 @@ public class SqlThingDao implements ThingDao {
     }
 
     /**
-     * Lisää tietokantaan uuden kohteen tiedot.
-     * 
-     * @param table Käsiteltävä tietokantataulu.
-     * @param name Lisättävän kohteen nimi.
-     */
-    @Override
-    public void create(String table, String name) throws Exception {
-
-        String sql = "INSERT INTO " + table + "(name) VALUES(?);";
-
-        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
-        pstmt.setString(1, name);
-
-        pstmt.executeUpdate();
-    }
-
-    /**
-     * Muuttaa tietokannassa olevan kohteen nimen.
-     * 
-     * @param table Käsiteltävä tietokantataulu.
-     * @param id Muutettavan kohteen tunnus.
-     * @param newName Kohteelle annettava uusi nimi.
-     */
-    @Override
-    public void rename(String table, int id, String newName) throws Exception {
-
-        String sql = "UPDATE " + table + " SET name = ?"
-                    + "WHERE id = ?;";
-
-        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
-        pstmt.setString(1, newName);
-        pstmt.setInt(2, id);
-
-        pstmt.executeUpdate();
-    }
-
-    /**
      * Poistaa kohteen tietokannasta.
      * 
      * @param table Käsiteltävä tietokantataulu.

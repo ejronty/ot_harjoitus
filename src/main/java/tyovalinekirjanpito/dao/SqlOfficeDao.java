@@ -20,6 +20,41 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
     }
 
     /**
+     * Lisää tietokantaan uuden toimipisteen tiedot.
+     * 
+     * @param name Lisättävän kohteen nimi.
+     */
+    @Override
+    public void create(String name) throws Exception {
+
+        String sql = "INSERT INTO offices(name) VALUES(?);";
+
+        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
+        pstmt.setString(1, name);
+
+        pstmt.executeUpdate();
+    }
+
+    /**
+     * Muuttaa tietokannassa olevan toimipisteen nimen.
+     * 
+     * @param id Muutettavan kohteen tunnus.
+     * @param newName Kohteelle annettava uusi nimi.
+     */
+    @Override
+    public void rename(int id, String newName) throws Exception {
+
+        String sql = "UPDATE offices SET name = ?"
+                    + "WHERE id = ?;";
+
+        PreparedStatement pstmt = this.dbConnection.prepareStatement(sql);
+        pstmt.setString(1, newName);
+        pstmt.setInt(2, id);
+
+        pstmt.executeUpdate();
+    }
+
+    /**
      * Hakee tietokannasta kaikki toimipisteet työvälineineen.
      */
     @Override
