@@ -271,6 +271,15 @@ public class InventoryService {
         }
     }
 
+    public boolean getToolConsumability(String name) {
+        try {
+            Tool tool = this.toolDao.findByName(name);
+            return tool.isConsumable();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String processInput(String input) {
         String result = input.replaceAll("[^\\w\\säÄöÖåÅ-]", "");
         result = result.strip();

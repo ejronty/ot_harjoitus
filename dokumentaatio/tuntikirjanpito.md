@@ -25,4 +25,9 @@
 | 7.12 | 1 | Debuggausta. |
 |  | 3.5 | Käyttöliittymän parantelua. |
 | 8.12 | 5 | Dokumentaation parantelua. |
-| yht | 94.5 | |
+| 9.12 | 2 | Suunnittelua loppukurssin varalle, uusien toimintojen hahmottelua. |
+| 10.12 | 7 | Suunnittelua ja refaktorointia. |
+| 12.12 | 1.5 | Refaktorointia. |
+| 14.12 | 2 | Sovelluslogiikan refaktorointia. |
+|  | 3.5 | Käyttöliittymän päivitystä. |
+| yht | 110.5 | |

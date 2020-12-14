@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -73,14 +74,7 @@ public class InventoryUI extends Application{
         mainMenu.setSpacing(5);
         mainMenu.setPadding(new Insets(5));
 
-        ChoiceBox toolOrOffice = new ChoiceBox();
-        toolOrOffice.getItems().addAll("Työvälineet", "Toimipisteet");
-        toolOrOffice.setValue("Työvälineet");
-        toolOrOffice.setMinWidth(120.0);
-        toolOrOffice.setOnAction(e -> {
-            redrawList();
-            redrawContent(new VBox());
-        });
+        ChoiceBox toolOrOffice = this.getChoiceBox();
 
         Button displayButton = new Button("Näytä");
         displayButton.setMaxWidth(Double.MAX_VALUE);
@@ -97,38 +91,11 @@ public class InventoryUI extends Application{
             }
         });
 
-        Button addButton = new Button("Luo uusi");
-        addButton.setMaxWidth(Double.MAX_VALUE);
-        addButton.setOnAction(e -> {
-            VBox content = createNewItemView();
-            redrawContent(content);
-        });
+        Button addButton = this.getCreateNewButton();
 
-        Button editButton = new Button("Muokkaa");
-        editButton.setMaxWidth(Double.MAX_VALUE);
-        editButton.setOnAction(e -> {
-            VBox content;
-            Object selection = this.listNode.getSelectionModel().getSelectedItem();
-            if (selection == null) {
-                content = selectionMessage();
-            } else {
-                content = editItemView(selection.toString());
-            }
-            redrawContent(content);
-        });
+        Button editButton = this.getEditButton();
 
-        Button deleteButton = new Button("Poista");
-        deleteButton.setMaxWidth(Double.MAX_VALUE);
-        deleteButton.setOnAction(e -> {
-           VBox content;
-            Object selection = this.listNode.getSelectionModel().getSelectedItem();
-            if (selection == null) {
-                content = selectionMessage();
-            } else {
-                content = deleteItemView(selection.toString());
-            }
-            redrawContent(content);
-        });
+        Button deleteButton = this.getDeleteButton();
 
         Button joinButton = new Button("Liitä");
         joinButton.setMaxWidth(Double.MAX_VALUE);
@@ -170,6 +137,67 @@ public class InventoryUI extends Application{
         return mainMenu;
     }
 
+    private ChoiceBox getChoiceBox() {
+        ChoiceBox toolOrOffice = new ChoiceBox();
+        toolOrOffice.getItems().addAll("Työvälineet", "Toimipisteet");
+        toolOrOffice.setValue("Työvälineet");
+        toolOrOffice.setMinWidth(120.0);
+        toolOrOffice.setOnAction(e -> {
+            redrawList();
+            redrawContent(new VBox());
+        });
+        return toolOrOffice;
+    }
+
+    private Button getCreateNewButton() {
+        Button createNewButton = new Button("Luo uusi");
+        createNewButton.setMaxWidth(Double.MAX_VALUE);
+        createNewButton.setOnAction(e -> {
+            if ("tools".equals(this.getTableSelection())) {
+                redrawContent(createNewToolView());
+            } else {
+                redrawContent(createNewOfficeView());
+            }
+        });
+        return createNewButton;
+    }
+
+    private Button getEditButton() {
+        Button editButton = new Button("Muokkaa");
+        editButton.setMaxWidth(Double.MAX_VALUE);
+        editButton.setOnAction(e -> {
+            VBox content;
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                content = selectionMessage();
+            } else {
+                if ("tools".equals(this.getTableSelection())) {
+                    content = editToolView(selection.toString());
+                } else {
+                    content = renameOfficeView(selection.toString());
+                }
+            }
+            redrawContent(content);
+        });
+        return editButton;
+    }
+
+    private Button getDeleteButton() {
+        Button deleteButton = new Button("Poista");
+        deleteButton.setMaxWidth(Double.MAX_VALUE);
+        deleteButton.setOnAction(e -> {
+            VBox content;
+            Object selection = this.listNode.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                content = selectionMessage();
+            } else {
+                content = deleteItemView(selection.toString());
+            }
+            redrawContent(content);
+        });
+        return deleteButton;
+    }
+
     private ListView drawListedItems() {
         ListView<String> list = new ListView<>();
         list.getItems().addAll(this.service.getItemList(this.getTableSelection()));
@@ -187,16 +215,19 @@ public class InventoryUI extends Application{
         this.contentNode.getChildren().addAll(newContent.getChildren());
     }
 
-    private VBox createNewItemView() {
+    private VBox createNewToolView() {
         VBox vbox = new VBox();
         vbox.setSpacing(5);
 
-        Label guide = new Label("Anna nimi uudelle kohteelle");
+        Label guide = new Label("Työvälineen nimi:");
         TextField nameField = new TextField();
         nameField.setTooltip(getTooltip());
+
+        CheckBox checkbox = new CheckBox("Kuluva työväline");
+
         Button createButton = new Button("Luo");
         createButton.setOnAction(e -> {
-            if (this.service.create(this.getTableSelection(), nameField.getText())) {
+            if (this.service.createTool(nameField.getText(), checkbox.isSelected())) {
                 redrawList();
                 nameField.setText("");
             } else {
@@ -204,23 +235,79 @@ public class InventoryUI extends Application{
             }
         });
 
-        vbox.getChildren().addAll(guide, nameField, createButton);
+        vbox.getChildren().addAll(guide, nameField, checkbox,
+                new Label(""), createButton);
+
         return vbox;
     }
 
-    private VBox editItemView(String name) {
+    private VBox createNewOfficeView() {
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+
+        Label guide = new Label("Toimipisteen nimi:");
+        TextField nameField = new TextField();
+        nameField.setTooltip(getTooltip());
+        Button createButton = new Button("Luo");
+        createButton.setOnAction(e -> {
+            if (this.service.createOffice(nameField.getText())) {
+                redrawList();
+                nameField.setText("");
+            } else {
+                redrawContent(detailedErrorMessage());
+            }
+        });
+
+        vbox.getChildren().addAll(guide, nameField, new Label(), createButton);
+        return vbox;
+    }
+
+    private VBox editToolView(String name) {
         VBox node = new VBox();
         node.setSpacing(5);
 
-        Label text = new Label("Muutetaan kohdetta");
+        Label text = new Label("Muutetaan työvälinettä");
         Label oldName = new Label(name);
-        Label guide = new Label("Anna uusi nimi");
 
+        Label guide = new Label("Anna uusi nimi:");
         TextField nameField = new TextField();
         nameField.setTooltip(getTooltip());
+        nameField.setText(name);
+
+        CheckBox checkbox = new CheckBox("Kuluva työväline");
+        checkbox.setSelected(this.service.getToolConsumability(name));
+
         Button submitButton = new Button("Muuta");
         submitButton.setOnAction(e -> {
-            if (this.service.rename(this.getTableSelection(), name, nameField.getText())) {
+            if (this.service.editTool(name, nameField.getText(), checkbox.isSelected())) {
+                redrawList();
+                redrawContent(new VBox());
+            } else {
+                redrawContent(detailedErrorMessage());
+            }
+        });
+
+        node.getChildren().addAll(text, oldName, new Label(""), 
+                guide, nameField, checkbox,
+                new Label(""), submitButton);
+        return node;
+    }
+
+    private VBox renameOfficeView(String name) {
+        VBox node = new VBox();
+        node.setSpacing(5);
+
+        Label text = new Label("Muutetaan toimipistettä");
+        Label oldName = new Label(name);
+
+        Label guide = new Label("Anna uusi nimi");
+        TextField nameField = new TextField();
+        nameField.setTooltip(getTooltip());
+        nameField.setText(name);
+
+        Button submitButton = new Button("Muuta");
+        submitButton.setOnAction(e -> {
+            if (this.service.renameOffice(name, nameField.getText())) {
                 redrawList();
                 redrawContent(new VBox());
             } else {
@@ -272,7 +359,7 @@ public class InventoryUI extends Application{
         submitButton.setOnAction(e -> {
             String officeName = list.getSelectionModel().getSelectedItem();
             if (officeName != null) {
-                if (this.service.addToolToOffice(officeName, name)) {
+                if (this.service.addToolToOffice(officeName, name, 1)) {
                     redrawContent(showOfficesWithToolView(name));
                 } else {
                     redrawContent(basicErrorMessage());
@@ -304,7 +391,7 @@ public class InventoryUI extends Application{
         submitButton.setOnAction(e -> {
             String itemName = list.getSelectionModel().getSelectedItem();
             if (itemName != null) {
-                if (this.service.addToolToOffice(name, itemName)) {
+                if (this.service.addToolToOffice(name, itemName, 1)) {
                     redrawContent(showToolsInOfficeView(name));
                 } else {
                     redrawContent(basicErrorMessage());
