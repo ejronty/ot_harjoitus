@@ -39,7 +39,7 @@ public class TestOfficeDao implements OfficeDao {
     }
 
     @Override
-    public void create(String table, String name) throws Exception {
+    public void create(String name) throws Exception {
         if (this.findByName(name) == null) {
             Office office = new Office(name, this.counter);
             this.counter++;
@@ -48,7 +48,7 @@ public class TestOfficeDao implements OfficeDao {
     }
 
     @Override
-    public void rename(String table, int id, String newName) throws Exception {
+    public void rename(int id, String newName) throws Exception {
         this.offices.get(id).setName(newName);
     }
 

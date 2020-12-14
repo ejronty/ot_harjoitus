@@ -26,6 +26,11 @@ public class Tool extends Thing {
         return consumable;
     }
 
+    // Tätä tarvitaan lähinnä testauksessa.
+    public void setConsumable(boolean consumable) {
+        this.consumable = consumable;
+    }
+
     /**
      * Metodi työvälineiden vertaamiseen muihin olioihin.
      * Kaksi työvälinettä katsotaan samaksi, jos niillä on sama nimi.

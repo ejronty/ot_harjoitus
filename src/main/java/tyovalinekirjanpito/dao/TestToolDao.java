@@ -34,17 +34,19 @@ public class TestToolDao implements ToolDao {
     }
 
     @Override
-    public void create(String table, String name) throws Exception {
+    public void create(String name, boolean consumable) throws Exception {
         if (this.findByName(name) == null) {
-            Tool tool = new Tool(name, this.counter);
+            Tool tool = new Tool(name, this.counter, consumable);
             this.counter++;
             this.tools.put(tool.getId(), tool);
         }
     }
 
     @Override
-    public void rename(String table, int id, String newName) throws Exception {
-        this.tools.get(id).setName(newName);
+    public void edit(int id, String newName, boolean consumable) throws Exception {
+        Tool tool = this.tools.get(id);
+        tool.setName(newName);
+        tool.setConsumable(consumable);
     }
 
     @Override
