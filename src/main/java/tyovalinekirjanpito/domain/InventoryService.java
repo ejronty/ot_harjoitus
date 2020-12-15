@@ -193,11 +193,13 @@ public class InventoryService {
                 return this.toolDao.getAll()
                         .stream()
                         .map(tool -> tool.getName())
+                        .sorted()
                         .collect(Collectors.toList());
             } else {
                 return this.officeDao.getAll()
                         .stream()
                         .map(office -> office.getName())
+                        .sorted()
                         .collect(Collectors.toList());
             }
         } catch (Exception e) {
