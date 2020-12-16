@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.Properties;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -17,6 +19,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -408,18 +412,33 @@ public class InventoryUI extends Application{
 
     private VBox showToolsInOfficeView(String name) {
         VBox wrapper = new VBox();
-        Label msg1 = new Label("Toimipisteeseen");
-        Label msg2 = new Label(name);
-        Label msg3 = new Label("liitetyt välineet:");
+        Label msg1 = new Label("Toimipisteessä");
+        Label msg2 = new Label(name + ":");
+        
+        Map<String, Integer> data = this.service.findToolsInOffice(name);
 
-        ListView<String> list = new ListView<>();
-        list.setMaxHeight(200);
-        list.setMaxWidth(180);
-        list.getItems().addAll(this.service.findToolsInOffice(name));
+        TableView table = new TableView<>();
+        table.setMaxHeight(200);
+        table.setMaxWidth(180);
+        //table
+        table.setEditable(false);
+        
+        table.getItems().addAll(data.keySet());
+        
+        TableColumn<String, String> toolColumn = new TableColumn<>("Työväline");
+        toolColumn.setMinWidth(116);
+        toolColumn.setMaxWidth(130);
+        toolColumn.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue()));
+        
+        TableColumn<String, String> amountColumn = new TableColumn<>("kpl");
+        amountColumn.setMaxWidth(45);
+        amountColumn.setCellValueFactory(cd -> new SimpleStringProperty(data.get(cd.getValue()).toString()));
+        
+        table.getColumns().addAll(toolColumn, amountColumn);
 
         Button removeButton = new Button("Poista valittu");
         removeButton.setOnAction(e -> {
-            String selection = list.getSelectionModel().getSelectedItem();
+            String selection = table.getSelectionModel().getSelectedItem().toString();
             if (selection == null) {
                 redrawContent(selectionMessage());
                 return;
@@ -431,8 +450,8 @@ public class InventoryUI extends Application{
             }
         });
 
-        wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(), 
-                list, new Label(""), removeButton);
+        wrapper.getChildren().addAll(msg1, msg2, new Label(), 
+                table, new Label(""), removeButton);
         return wrapper;
     }
 

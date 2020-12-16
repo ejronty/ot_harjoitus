@@ -3,6 +3,8 @@ package tyovalinekirjanpito.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.ToolDao;
@@ -264,12 +266,12 @@ public class InventoryService {
      * 
      * @param officeName Toimipisteen nimi.
      */
-    public Collection<String> findToolsInOffice(String officeName) {
+    public Map<String, Integer> findToolsInOffice(String officeName) {
         try {
             Office office = this.officeDao.findByName(officeName);
-            return office.getToolNames();
+            return office.getToolsWithAmounts();
         } catch (Exception e) {
-            return new ArrayList<>();
+            return new TreeMap<>();
         }
     }
 
