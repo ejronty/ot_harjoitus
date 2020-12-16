@@ -3,6 +3,7 @@ package tyovalinekirjanpito.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -231,15 +232,15 @@ public class InventoryService {
      * 
      * @param toolName Työvälineen nimi.
      */
-    public Collection<String> findOfficesContainingTool(String toolName) {
+    public Map<String, Integer> findOfficesContainingTool(String toolName) {
         try {
             return this.officeDao.getAll()
                     .stream()
                     .filter(office -> office.containsTool(toolName))
-                    .map(office -> office.getName())
-                    .collect(Collectors.toList());
+                    .sorted(Comparator.comparing(Office::getName))
+                    .collect(Collectors.toMap(office -> office.getName(), office -> office.getAmount(toolName)));
         } catch (Exception e) {
-            return new ArrayList<>();
+            return new TreeMap<>();
         }
     }
 

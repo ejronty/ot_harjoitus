@@ -37,7 +37,7 @@ public class Office extends Thing {
     }
     
     public int getAmount(String toolName) {
-        return this.tools.get(toolName);
+        return this.tools.getOrDefault(toolName, 0);
     }
     
     public boolean containsTool(String toolName) {

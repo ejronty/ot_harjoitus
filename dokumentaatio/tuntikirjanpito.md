@@ -30,4 +30,6 @@
 | 12.12 | 1.5 | Refaktorointia. |
 | 14.12 | 2 | Sovelluslogiikan refaktorointia. |
 |  | 3.5 | Käyttöliittymän päivitystä. |
-| yht | 110.5 | |
+| 15.12 | 3 | Tiedonhakua ja testailua. |
+| 16.12 | 7 | Uusia ominaisuuksia. |
+| yht | 120.5 | |

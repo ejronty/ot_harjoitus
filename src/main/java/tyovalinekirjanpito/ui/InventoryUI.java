@@ -29,7 +29,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.NumberStringConverter;
 import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.SqlOfficeDao;
 import tyovalinekirjanpito.dao.SqlToolDao;
@@ -44,6 +43,7 @@ public class InventoryUI extends Application{
     private VBox menuNode;
     private ListView listNode;
     private VBox contentNode;
+    private VBox secondaryContent;
 
     @Override
     public void init() throws Exception {
@@ -66,6 +66,7 @@ public class InventoryUI extends Application{
         contentNode = new VBox();
         contentNode.setSpacing(5);
         contentNode.setPadding(new Insets(5));
+        secondaryContent = new VBox();
 
         layout.getChildren().add(menuNode);
         layout.getChildren().add(listNode);
@@ -219,8 +220,14 @@ public class InventoryUI extends Application{
     }
 
     private void redrawContent(VBox newContent) {
+        this.redrawSecondaryContent(new VBox());
         this.contentNode.getChildren().clear();
         this.contentNode.getChildren().addAll(newContent.getChildren());
+    }
+
+    private void redrawSecondaryContent(VBox newContent) {
+        this.secondaryContent.getChildren().clear();
+        this.secondaryContent.getChildren().addAll(newContent.getChildren());
     }
 
     private VBox createNewToolView() {
@@ -425,71 +432,47 @@ public class InventoryUI extends Application{
 
         Map<String, Integer> data = this.service.findToolsInOffice(name);
 
-        TableView table = new TableView<>();
-        table.setMaxHeight(200);
-        table.setMaxWidth(180);
-        table.setEditable(false);
-
-        table.getItems().addAll(data.keySet());
-
-        TableColumn<String, String> toolColumn = new TableColumn<>("Työväline");
-        toolColumn.setMinWidth(116);
-        toolColumn.setMaxWidth(130);
-        toolColumn.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue()));
-
-        TableColumn<String, String> amountColumn = new TableColumn<>("kpl");
-        amountColumn.setMaxWidth(45);
-        amountColumn.setCellValueFactory(cd -> new SimpleStringProperty(data.get(cd.getValue()).toString()));
-
-        table.getColumns().addAll(toolColumn, amountColumn);
-
-        Button removeButton = new Button("Poista valittu");
-        removeButton.setOnAction(e -> {
-            String selection = table.getSelectionModel().getSelectedItem().toString();
+        TableView table = this.getTable("Työväline", data);
+        table.setOnMouseClicked(e -> {
+            Object selection = table.getSelectionModel().getSelectedItem();
             if (selection == null) {
-                redrawContent(selectionMessage());
                 return;
             }
-            if (this.service.removeToolFromOffice(name, selection)) {
-                redrawContent(showToolsInOfficeView(name));
-            } else {
-                redrawContent(basicErrorMessage());
-            }
+            this.redrawSecondaryContent(this.getSecondaryButtons(name, selection.toString()));
         });
 
         wrapper.getChildren().addAll(msg1, msg2, new Label(), 
-                table, new Label(""), removeButton);
+                table, new Label(""));
+        wrapper.getChildren().add(this.secondaryContent);
         return wrapper;
     }
 
     private VBox showOfficesWithToolView(String name) {
         VBox wrapper = new VBox();
-        Label msg1 = new Label("Työväline");
+        Label msg1 = new Label("Työvälinettä");
         Label msg2 = new Label(name);
-        Label msg3 = new Label("löytyy seuraavista");
-        Label msg4 = new Label("toimipisteistä:");
+        Label msg3 = new Label("löytyy seuraavasti:");
 
-        ListView<String> list = new ListView<>();
-        list.setMaxWidth(180);
-        list.setMaxHeight(200);
-        list.getItems().addAll(this.service.findOfficesContainingTool(name));
+        Map<String, Integer> data = this.service.findOfficesContainingTool(name);
+
+        TableView table = this.getTable("Toimipisteessä", data);
 
         Button removeButton = new Button("Poista valittu");
         removeButton.setOnAction(e -> {
-            String selection = list.getSelectionModel().getSelectedItem();
+            Object selection = table.getSelectionModel().getSelectedItem();
             if (selection == null) {
                 redrawContent(selectionMessage());
                 return;
             }
-            if (this.service.removeToolFromOffice(selection, name)) {
+            if (this.service.removeToolFromOffice(selection.toString(), name)) {
                 redrawContent(showOfficesWithToolView(name));
             } else {
                 redrawContent(basicErrorMessage());
             }
         });
 
-        wrapper.getChildren().addAll(msg1, msg2, msg3, msg4,
-                new Label(""), list, new Label(""), removeButton);
+        wrapper.getChildren().addAll(msg1, msg2, msg3,
+                new Label(""), table, new Label(""), removeButton);
 
         return wrapper;
     }
@@ -547,6 +530,52 @@ public class InventoryUI extends Application{
         input.setMaxWidth(60);
         input.setTooltip(new Tooltip("1-999"));
         return input;
+    }
+
+    private TableView getTable(String header, Map<String, Integer> data) {
+        TableView table = new TableView<>();
+        table.setMaxHeight(200);
+        table.setMaxWidth(180);
+        table.setEditable(false);
+
+        table.getItems().addAll(data.keySet());
+
+        TableColumn<String, String> itemColumn = new TableColumn<>(header);
+        itemColumn.setMinWidth(116);
+        itemColumn.setMaxWidth(130);
+        itemColumn.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue()));
+
+        TableColumn<String, String> amountColumn = new TableColumn<>("kpl");
+        amountColumn.setMaxWidth(45);
+        amountColumn.setCellValueFactory(cd -> new SimpleStringProperty(data.get(cd.getValue()).toString()));
+
+        table.getColumns().addAll(itemColumn, amountColumn);
+
+        return table;
+    }
+
+    private VBox getSecondaryButtons(String office, String tool) {
+        VBox wrapper = new VBox();
+
+        Button addMoreButton = new Button("Lisää");
+        Button useButton = new Button("Käytä");
+        Button transferButton = new Button("Siirrä");
+        Button deleteButton = new Button("Poista");
+        deleteButton.setOnAction(e -> {
+            if (this.service.removeToolFromOffice(office, tool)) {
+                redrawContent(showToolsInOfficeView(office));
+            } else {
+                redrawContent(basicErrorMessage());
+            }
+        });
+
+        wrapper.getChildren().add(addMoreButton);
+        if (this.service.getToolConsumability(tool)) {
+            wrapper.getChildren().add(useButton);
+        }
+        wrapper.getChildren().addAll(transferButton, deleteButton);
+
+        return wrapper;
     }
 
     private String getTableSelection() {
