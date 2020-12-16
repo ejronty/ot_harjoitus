@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,10 +23,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
 import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.SqlOfficeDao;
 import tyovalinekirjanpito.dao.SqlToolDao;
@@ -357,16 +361,20 @@ public class InventoryUI extends Application{
 
         ListView<String> list = new ListView();
         list.setMaxWidth(180);
+        list.setMaxHeight(200);
         list.getItems().addAll(this.service.findOfficesWithoutTool(name));
+
+        Label amount = new Label("Montako?");
+        TextField amountField = this.getNumberInputField();
 
         Button submitButton = new Button("Valitse");
         submitButton.setOnAction(e -> {
             String officeName = list.getSelectionModel().getSelectedItem();
             if (officeName != null) {
-                if (this.service.addToolToOffice(officeName, name, 1)) {
+                if (this.service.addToolToOffice(officeName, name, amountField.getText())) {
                     redrawContent(showOfficesWithToolView(name));
                 } else {
-                    redrawContent(basicErrorMessage());
+                    redrawContent(detailedErrorMessage());
                 }
             } else {
                 redrawContent(selectionMessage());
@@ -374,7 +382,7 @@ public class InventoryUI extends Application{
         });
 
         vbox.getChildren().addAll(q_part_1, q_part_2, itemName, 
-                q_part_3, list, submitButton);
+                q_part_3, list, amount, amountField, submitButton);
         return vbox;
     }
 
@@ -395,10 +403,10 @@ public class InventoryUI extends Application{
         submitButton.setOnAction(e -> {
             String itemName = list.getSelectionModel().getSelectedItem();
             if (itemName != null) {
-                if (this.service.addToolToOffice(name, itemName, 1)) {
+                if (this.service.addToolToOffice(name, itemName, "1")) {
                     redrawContent(showToolsInOfficeView(name));
                 } else {
-                    redrawContent(basicErrorMessage());
+                    redrawContent(detailedErrorMessage());
                 }
             } else {
                 redrawContent(selectionMessage());
@@ -414,26 +422,25 @@ public class InventoryUI extends Application{
         VBox wrapper = new VBox();
         Label msg1 = new Label("Toimipisteessä");
         Label msg2 = new Label(name + ":");
-        
+
         Map<String, Integer> data = this.service.findToolsInOffice(name);
 
         TableView table = new TableView<>();
         table.setMaxHeight(200);
         table.setMaxWidth(180);
-        //table
         table.setEditable(false);
-        
+
         table.getItems().addAll(data.keySet());
-        
+
         TableColumn<String, String> toolColumn = new TableColumn<>("Työväline");
         toolColumn.setMinWidth(116);
         toolColumn.setMaxWidth(130);
         toolColumn.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue()));
-        
+
         TableColumn<String, String> amountColumn = new TableColumn<>("kpl");
         amountColumn.setMaxWidth(45);
         amountColumn.setCellValueFactory(cd -> new SimpleStringProperty(data.get(cd.getValue()).toString()));
-        
+
         table.getColumns().addAll(toolColumn, amountColumn);
 
         Button removeButton = new Button("Poista valittu");
@@ -526,6 +533,20 @@ public class InventoryUI extends Application{
 
     private Tooltip getTooltip() {
         return new Tooltip("[a-ö], [0-9],  , -, _");
+    }
+
+    private TextField getNumberInputField() {
+        TextField input = new TextField();
+
+        TextFormatter<Integer> formatter = new TextFormatter<>(
+            new IntegerStringConverter(),
+            1,
+            c -> Pattern.matches("\\d*", c.getText()) ? c : null);
+
+        input.setTextFormatter(formatter);
+        input.setMaxWidth(60);
+        input.setTooltip(new Tooltip("1-999"));
+        return input;
     }
 
     private String getTableSelection() {

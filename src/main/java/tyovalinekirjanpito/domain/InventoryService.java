@@ -149,12 +149,12 @@ public class InventoryService {
      * @param toolName Lisättävän työvälineen nimi.
      * @param amount Montako kappaletta työvälinettä lisätään.
      */
-    public boolean addToolToOffice(String officeName, String toolName, int amount) {
+    public boolean addToolToOffice(String officeName, String toolName, String amount) {
 
         try {
             Office office = this.officeDao.findByName(officeName);
 
-            if (office.addTool(toolName, amount)) {
+            if (office.addTool(toolName, this.validateNumberInput(amount))) {
                 this.officeDao.updateToolList(office);
             }
         } catch (Exception e) {
@@ -292,5 +292,14 @@ public class InventoryService {
                     result.substring(1, Math.min(25, result.length())).toLowerCase();
         }
         return null;
+    }
+
+    private int validateNumberInput(String amount) throws Exception {
+        int value = Integer.parseInt(amount);
+
+        if (value <= 0 || value > 999) {
+            throw new Exception("Unacceptable input!");
+        }
+        return value;
     }
 }
