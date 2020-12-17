@@ -49,3 +49,5 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 * Työvälineille voi tallentaa luokkia/kategorioita/avainsanoja, joita voi hyödyntää haussa.
 * Käyttäjänhallinta, jolloin sovellusta voisi käyttää myös jaetulla laitteella.
     * Mahdollisesti myös eri käyttäjärooleja (ylläpitäjä ja normaali käyttäjä).
+* Kulumattoman työvälineen voi varata, jolloin se ei ole muiden käyttäjien saatavilla.
+* Toimipisteille varastotilavuus, johon perustuen työvälineiden määrää rajoitetaan.

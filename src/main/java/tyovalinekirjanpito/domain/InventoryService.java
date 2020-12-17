@@ -184,10 +184,17 @@ public class InventoryService {
         return true;
     }
 
-    public boolean updateToolAmountInOffice(String officeName, String toolName, String amount) {
+    public boolean updateToolAmountInOffice(String officeName, String toolName, String amount, String actionType) {
         try {
             Office office = this.officeDao.findByName(officeName);
+            int oldAmount = office.getAmount(toolName);
             int newAmount = this.validateNumberInput(amount);
+
+            if (actionType.equals("add")) {
+                newAmount = oldAmount + newAmount;
+            } else if (actionType.equals("use")) {
+                newAmount = oldAmount - newAmount;
+            }
 
             if (office.updateAmount(toolName, newAmount)) {
                 this.officeDao.updateToolList(office);

@@ -69,7 +69,7 @@ public class Office extends Thing {
      * @param newAmount Työvälineen uusi määrä.
      */
     public boolean updateAmount(String toolName, int newAmount) {
-        if (newAmount < 0) {
+        if (newAmount < 0 || newAmount > 999) {
             return false;
         } else if (newAmount == 0) {
             return this.removeTool(toolName);

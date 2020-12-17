@@ -32,4 +32,5 @@
 |  | 3.5 | Käyttöliittymän päivitystä. |
 | 15.12 | 3 | Tiedonhakua ja testailua. |
 | 16.12 | 7 | Uusia ominaisuuksia. |
-| yht | 120.5 | |
+| 17.12 | 3.5 | Uusien toimintojen kehitystä. |
+| yht | 124 | |

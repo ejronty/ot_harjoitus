@@ -478,7 +478,7 @@ public class InventoryUI extends Application{
         return wrapper;
     }
 
-    private VBox modifyAmountView(String office, String tool) {
+    private VBox modifyAmountView(String office, String tool, String action) {
         VBox wrapper = new VBox();
 
         Integer amount = this.service.getAmountOfToolInOffice(office, tool);
@@ -487,14 +487,27 @@ public class InventoryUI extends Application{
         }
 
         Label msg1 = new Label(tool + ", nyt " + amount + "kpl");
-        Label msg2 = new Label("Anna uusi määrä:");
+        Label msg2 = new Label();
+        String buttonLabel = "";
+
+        if (action.equals("add")) {
+            msg2.setText("Montako lisätään?");
+            buttonLabel = "Lisää";
+        } else if (action.equals("use")) {
+            msg2.setText("Montako käytetään?");
+            buttonLabel = "Käytä";
+        } else if (action.equals("modify")) {
+            msg2.setText("Anna uusi määrä:");
+            buttonLabel = "Muuta";
+        }
+
         TextField newAmountField = this.getNumberInputField();
-        Button submitButton = new Button("Muuta");
+        Button submitButton = new Button(buttonLabel);
         submitButton.setOnAction(e -> {
-            if (this.service.updateToolAmountInOffice(office, tool, newAmountField.getText())) {
+            if (this.service.updateToolAmountInOffice(office, tool, newAmountField.getText(), action)) {
                 this.redrawContent(this.showToolsInOfficeView(office));
             } else {
-                this.redrawContent(this.basicErrorMessage());
+                this.redrawContent(this.detailedErrorMessage());
             }
         });
 
@@ -584,10 +597,18 @@ public class InventoryUI extends Application{
         VBox wrapper = new VBox();
 
         Button addMoreButton = new Button("Lisää");
+        addMoreButton.setOnAction(e -> {
+            this.redrawSecondaryContent(this.modifyAmountView(office, tool, "add"));
+        });
+
         Button useButton = new Button("Käytä");
+        useButton.setOnAction(e -> {
+            this.redrawSecondaryContent(this.modifyAmountView(office, tool, "use"));
+        });
+
         Button modifyButton = new Button("Muuta määrää");
         modifyButton.setOnAction(e -> {
-            this.redrawSecondaryContent(this.modifyAmountView(office, tool));
+            this.redrawSecondaryContent(this.modifyAmountView(office, tool, "modify"));
         });
 
         Button transferButton = new Button("Siirrä");
