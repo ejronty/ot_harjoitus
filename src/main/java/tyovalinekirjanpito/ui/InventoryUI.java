@@ -67,6 +67,7 @@ public class InventoryUI extends Application{
         contentNode.setSpacing(5);
         contentNode.setPadding(new Insets(5));
         secondaryContent = new VBox();
+        secondaryContent.setSpacing(5);
 
         layout.getChildren().add(menuNode);
         layout.getChildren().add(listNode);
@@ -477,6 +478,31 @@ public class InventoryUI extends Application{
         return wrapper;
     }
 
+    private VBox modifyAmountView(String office, String tool) {
+        VBox wrapper = new VBox();
+
+        Integer amount = this.service.getAmountOfToolInOffice(office, tool);
+        if (amount == null) {
+            this.redrawContent(basicErrorMessage());
+        }
+
+        Label msg1 = new Label(tool + ", nyt " + amount + "kpl");
+        Label msg2 = new Label("Anna uusi määrä:");
+        TextField newAmountField = this.getNumberInputField();
+        Button submitButton = new Button("Muuta");
+        submitButton.setOnAction(e -> {
+            if (this.service.updateToolAmountInOffice(office, tool, newAmountField.getText())) {
+                this.redrawContent(this.showToolsInOfficeView(office));
+            } else {
+                this.redrawContent(this.basicErrorMessage());
+            }
+        });
+
+        wrapper.getChildren().addAll(msg1, msg2, newAmountField, submitButton);
+
+        return wrapper;
+    }
+
     private VBox selectionMessage() {
         VBox wrapper = new VBox();
         Label instruction = new Label("Valitse ensin \n"
@@ -559,6 +585,11 @@ public class InventoryUI extends Application{
 
         Button addMoreButton = new Button("Lisää");
         Button useButton = new Button("Käytä");
+        Button modifyButton = new Button("Muuta määrää");
+        modifyButton.setOnAction(e -> {
+            this.redrawSecondaryContent(this.modifyAmountView(office, tool));
+        });
+
         Button transferButton = new Button("Siirrä");
         Button deleteButton = new Button("Poista");
         deleteButton.setOnAction(e -> {
@@ -569,9 +600,10 @@ public class InventoryUI extends Application{
             }
         });
 
-        wrapper.getChildren().add(addMoreButton);
         if (this.service.getToolConsumability(tool)) {
-            wrapper.getChildren().add(useButton);
+            wrapper.getChildren().addAll(addMoreButton, useButton);
+        } else {
+            wrapper.getChildren().add(modifyButton);
         }
         wrapper.getChildren().addAll(transferButton, deleteButton);
 

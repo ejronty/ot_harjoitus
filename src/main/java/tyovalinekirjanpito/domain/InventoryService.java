@@ -184,6 +184,20 @@ public class InventoryService {
         return true;
     }
 
+    public boolean updateToolAmountInOffice(String officeName, String toolName, String amount) {
+        try {
+            Office office = this.officeDao.findByName(officeName);
+            int newAmount = this.validateNumberInput(amount);
+
+            if (office.updateAmount(toolName, newAmount)) {
+                this.officeDao.updateToolList(office);
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Kaikki työvälineet tai toimipisteet.
      * 
@@ -282,6 +296,15 @@ public class InventoryService {
             return tool.isConsumable();
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public Integer getAmountOfToolInOffice(String officeName, String toolName) {
+        try {
+            Office office = this.officeDao.findByName(officeName);
+            return office.getAmount(toolName);
+        } catch (Exception e) {
+            return null;
         }
     }
 
