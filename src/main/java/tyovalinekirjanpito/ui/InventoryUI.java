@@ -595,6 +595,10 @@ public class InventoryUI extends Application{
 
     private VBox getSecondaryButtons(String office, String tool) {
         VBox wrapper = new VBox();
+        HBox row1 = new HBox();
+        row1.setSpacing(5);
+        HBox row2 = new HBox();
+        row2.setSpacing(5);
 
         Button addMoreButton = new Button("Lisää");
         addMoreButton.setOnAction(e -> {
@@ -612,6 +616,8 @@ public class InventoryUI extends Application{
         });
 
         Button transferButton = new Button("Siirrä");
+        // toiminto tähän
+
         Button deleteButton = new Button("Poista");
         deleteButton.setOnAction(e -> {
             if (this.service.removeToolFromOffice(office, tool)) {
@@ -622,11 +628,12 @@ public class InventoryUI extends Application{
         });
 
         if (this.service.getToolConsumability(tool)) {
-            wrapper.getChildren().addAll(addMoreButton, useButton);
+            row1.getChildren().addAll(addMoreButton, useButton);
         } else {
-            wrapper.getChildren().add(modifyButton);
+            row1.getChildren().add(modifyButton);
         }
-        wrapper.getChildren().addAll(transferButton, deleteButton);
+        row2.getChildren().addAll(transferButton, deleteButton);
+        wrapper.getChildren().addAll(row1, row2);
 
         return wrapper;
     }

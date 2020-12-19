@@ -196,9 +196,10 @@ public class InventoryService {
                 newAmount = oldAmount - newAmount;
             }
 
-            if (office.updateAmount(toolName, newAmount)) {
-                this.officeDao.updateToolList(office);
+            if (!office.updateAmount(toolName, newAmount)) {
+                return false;
             }
+            this.officeDao.updateToolList(office);
         } catch (Exception e) {
             return false;
         }
