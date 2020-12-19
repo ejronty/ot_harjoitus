@@ -206,6 +206,25 @@ public class InventoryService {
         return true;
     }
 
+    public boolean transferToolsBetweenOffices(String office1, String office2, String tool, String amount) {
+        try {
+            Office officeFrom = this.officeDao.findByName(office1);
+            Office officeTo = this.officeDao.findByName(office2);
+            int amountToTransfer = this.validateNumberInput(amount);
+
+            if (officeFrom.updateAmount(tool, officeFrom.getAmount(tool) - amountToTransfer) &&
+                    officeTo.updateAmount(tool, officeTo.getAmount(tool) + amountToTransfer)) {
+                this.officeDao.updateToolList(officeFrom);
+                this.officeDao.updateToolList(officeTo);
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Kaikki työvälineet tai toimipisteet.
      * 
@@ -243,6 +262,7 @@ public class InventoryService {
                     .stream()
                     .filter(office -> !office.containsTool(toolName))
                     .map(office -> office.getName())
+                    .sorted()
                     .collect(Collectors.toList());
         } catch (Exception e) {
             return new ArrayList<>();
@@ -278,6 +298,7 @@ public class InventoryService {
                     .stream()
                     .map(tool -> tool.getName())
                     .filter(toolName -> !office.containsTool(toolName))
+                    .sorted()
                     .collect(Collectors.toList());
         } catch (Exception e) {
             return new ArrayList<>();
@@ -313,6 +334,18 @@ public class InventoryService {
             return office.getAmount(toolName);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public Map<String, Integer> getToolDataFromOtherOffices(String officeName, String toolName) {
+        try {
+            return this.officeDao.getAll()
+                    .stream()
+                    .filter(office -> !office.getName().equals(officeName))
+                    .sorted(Comparator.comparing(Office::getName))
+                    .collect(Collectors.toMap(office -> office.getName(), office -> office.getAmount(toolName)));
+        } catch (Exception e) {
+            return new TreeMap<>();
         }
     }
 

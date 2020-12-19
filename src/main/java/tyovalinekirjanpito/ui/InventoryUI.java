@@ -211,6 +211,17 @@ public class InventoryUI extends Application{
     private ListView drawListedItems() {
         ListView<String> list = new ListView<>();
         list.getItems().addAll(this.service.getItemList(this.getTableSelection()));
+        list.setOnMouseClicked(e -> {
+            String selection = list.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                return;
+            }
+            if ("tools".equals(this.getTableSelection())) {
+                this.redrawContent(this.showOfficesWithToolView(selection));
+            } else {
+                this.redrawContent(this.showToolsInOfficeView(selection));
+            }
+        });
 
         return list;
     }
@@ -516,6 +527,75 @@ public class InventoryUI extends Application{
         return wrapper;
     }
 
+    private VBox transferToolsView(String office, String tool) {
+        VBox wrapper = new VBox();
+        Label msg1 = new Label("Toimipisteessä");
+        Label msg2 = new Label(office);
+        Label msg3 = this.getAmountOfToolInOfficeMessage(office, tool);
+
+        Map<String, Integer> data = this.service.getToolDataFromOtherOffices(office, tool);
+        Label msg4 = new Label("Mihin siirretään?");
+        TableView table = this.getTable("Toimipisteessä", data);
+        table.setOnMouseClicked(e -> {
+            Object selection = table.getSelectionModel().getSelectedItem();
+            if (selection == null) {
+                return;
+            }
+            this.redrawSecondaryContent(this.secondaryTransferView(office, selection.toString(), tool));
+        });
+
+        wrapper.getChildren().addAll(msg1, msg2, msg3, new Label(""), 
+                msg4, table, this.secondaryContent);
+
+        return wrapper;
+    }
+
+    private Label getAmountOfToolInOfficeMessage(String office, String tool) {
+        Integer amount = this.service.getAmountOfToolInOffice(office, tool);
+        if (amount == null) {
+            this.redrawContent(basicErrorMessage());
+            return null;
+        }
+
+        Label message = new Label(tool + ", " + amount + " kpl");
+        return message;
+    }
+
+    private VBox secondaryTransferView(String officeFrom, String officeTo, String tool) {
+        VBox wrap = new VBox();
+        Label msg1 = new Label("Montako?");
+        TextField amountField = this.getNumberInputField();
+        Button submitButton = new Button("Siirrä");
+        submitButton.setOnAction(e -> {
+            if (this.service.transferToolsBetweenOffices(officeFrom, officeTo, tool, amountField.getText())) {
+                this.redrawContent(this.transferCompleteMessge(officeFrom, officeTo, tool));
+            } else {
+                this.redrawContent(this.basicErrorMessage());
+            }
+        });
+
+        wrap.getChildren().addAll(msg1, amountField, submitButton);
+
+        return wrap;
+    }
+
+    private VBox transferCompleteMessge(String officeFrom, String officeTo, String tool) {
+        VBox wrap = new VBox();
+        Label msg1 = new Label("Siirto onnistui.");
+        Label msg2 = new Label("Tilanne nyt:");
+
+        Label msg3 = new Label(officeFrom);
+        Label msg4 = this.getAmountOfToolInOfficeMessage(officeFrom, tool);
+
+        Label msg5 = new Label(officeTo);
+        Label msg6 = this.getAmountOfToolInOfficeMessage(officeTo, tool);
+
+        wrap.getChildren().addAll(msg1, msg2, new Label(""), 
+                msg3, msg4, new Label(""), msg5, msg6);
+
+        return wrap;
+    }
+
     private VBox selectionMessage() {
         VBox wrapper = new VBox();
         Label instruction = new Label("Valitse ensin \n"
@@ -616,7 +696,9 @@ public class InventoryUI extends Application{
         });
 
         Button transferButton = new Button("Siirrä");
-        // toiminto tähän
+        transferButton.setOnAction(e -> {
+            this.redrawContent(this.transferToolsView(office, tool));
+        });
 
         Button deleteButton = new Button("Poista");
         deleteButton.setOnAction(e -> {
@@ -695,7 +777,6 @@ public class InventoryUI extends Application{
             return dbConnection;
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return null;
         }
     }

@@ -74,7 +74,9 @@ public class Office extends Thing {
         } else if (newAmount == 0) {
             return this.removeTool(toolName);
         }
-        if (this.tools.replace(toolName, newAmount) == null) {
+        if (!this.containsTool(toolName)) {
+            return this.addTool(toolName, newAmount);
+        } else if (this.tools.replace(toolName, newAmount) == null) {
             return false;
         }
         return true;

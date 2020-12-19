@@ -33,4 +33,5 @@
 | 15.12 | 3 | Tiedonhakua ja testailua. |
 | 16.12 | 7 | Uusia ominaisuuksia. |
 | 17.12 | 3.5 | Uusien toimintojen kehitystä. |
-| yht | 124 | |
+| 19.12 | 5 | Uusien toimintojen kehitystä. |
+| yht | 129 | |
