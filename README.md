@@ -16,6 +16,8 @@ Sovellus on tarkoitettu k채ytett채v채ksi yksityisell채 laitteella, eik채 se sis�
 
 ### Releaset
 
+[Loppupalautus](https://github.com/ejronty/ot_harjoitus/releases/tag/Viikko7)
+
 [Viikko 6](https://github.com/ejronty/ot_harjoitus/releases/tag/viikko6)
 
 [Viikko 5](https://github.com/ejronty/ot_harjoitus/releases/tag/Viikko5)
