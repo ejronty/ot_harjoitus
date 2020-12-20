@@ -24,6 +24,8 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
      * 
      * @param name Lisättävän kohteen nimi.
      * @param consumable Onko kyseessä kuluva työväline?
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee vikaan.
      */
     @Override
     public void create(String name, boolean consumable) throws Exception {
@@ -43,6 +45,9 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
      * @param id Muutettavan kohteen tunnus.
      * @param newName Kohteelle annettava uusi nimi.
      * @param consumable Onko kyseessä kuluva työväline?
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
      */
     @Override
     public void edit(int id, String newName, boolean consumable) throws Exception {
@@ -61,6 +66,11 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
 
     /**
      * Hakee tietokannasta kaikki työvälineet.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
+     * 
+     * @return Palauttaa listan tietokannasta löytyneistä työvälineistä.
      */
     @Override
     public Collection<Tool> getAll() throws Exception {
@@ -79,7 +89,12 @@ public class SqlToolDao extends SqlThingDao implements ToolDao {
     /**
      * Etsii tietokannasta työvälineen annetulla nimellä.
      * 
-     * @param name annetun työvälineen nimi.
+     * @param name Etsittävän työvälineen nimi.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
+     * 
+     * @return Palauttaa työvälineen, jos sellainen löytyy.
      */
     @Override
     public Tool findByName(String name) throws Exception {

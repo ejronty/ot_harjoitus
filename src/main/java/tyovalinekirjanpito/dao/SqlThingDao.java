@@ -22,6 +22,9 @@ public class SqlThingDao implements ThingDao {
      * 
      * @param table Käsiteltävä tietokantataulu.
      * @param id Poistettavan kohteen tunnus.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
      */
     @Override
     public void delete(String table, int id) throws Exception {

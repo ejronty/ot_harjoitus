@@ -11,9 +11,7 @@ import tyovalinekirjanpito.dao.OfficeDao;
 import tyovalinekirjanpito.dao.ToolDao;
 
 /**
- * Sovelluslogiikasta huolehtiva luokka. Monet luokan metodeista
- * käsittelevät sekä työvälineitä että toimipisteitä, sillä 
- * molemmissa tapauksessa logiikka olisi hyvin samanlainen.
+ * Sovelluslogiikasta huolehtiva luokka. 
  */
 public class InventoryService {
 
@@ -30,6 +28,8 @@ public class InventoryService {
      * 
      * @param itemName Lisättävän kohteen nimi.
      * @param consumable Onko kyseessä kuluva työväline?
+     * 
+     * @return Palauttaa true, jos työvälineen lisäys onnistui.
      */
     public boolean createTool(String itemName, boolean consumable) {
         String name = this.processInput(itemName);
@@ -46,6 +46,8 @@ public class InventoryService {
      * Luo uuden toimipisteen.
      * 
      * @param officeName Luotavan toimipisteen nimi.
+     * 
+     * @return Palauttaa true, jos toimipisteen lisääminen onnistui.
      */
     public boolean createOffice(String officeName) {
         String name = this.processInput(officeName);
@@ -64,6 +66,8 @@ public class InventoryService {
      * @param oldName Muokattavan työvälineen tämänhetkinen nimi.
      * @param newName Työvälineen uusi nimi.
      * @param consumable Onko työväline kuluva?
+     * 
+     * @return Palauttaa true, jos muutos onnistui.
      */
     public boolean editTool(String oldName, String newName, boolean consumable) {
         String name = this.processInput(newName);
@@ -97,6 +101,8 @@ public class InventoryService {
      * @param oldName Nimi, jolla muokattava kohde tällä hetkellä
      * esiintyy ohjelmassa.
      * @param newName Käyttäjän syöttämä uusi nimi kohteelle.
+     * 
+     * @return Palauttaa true, jos muutos onnistui.
      */
     public boolean renameOffice(String oldName, String newName) {
         String name = this.processInput(newName);
@@ -115,6 +121,8 @@ public class InventoryService {
      * 
      * @param table Poistettavan kohteen tyyppi. Ei käyttäjän syöte.
      * @param name Poistettavan kohteen nimi.
+     * 
+     * @return Palauttaa true, jos poisto onnistui.
      */
     public boolean delete(String table, String name) {
 
@@ -149,6 +157,9 @@ public class InventoryService {
      * lisätä.
      * @param toolName Lisättävän työvälineen nimi.
      * @param amount Montako kappaletta työvälinettä lisätään.
+     * 
+     * @return Palauttaa true, jos työvälineen liittäminen toimipisteeseen
+     * onnistui.
      */
     public boolean addToolToOffice(String officeName, String toolName, String amount) {
 
@@ -170,6 +181,9 @@ public class InventoryService {
      * @param officeName Sen toimipisteen nimi, josta työväline
      * halutaan poistaa.
      * @param toolName Poistettavan työvälineen nimi.
+     * 
+     * @return Palauttaa true, jos työvälineen poistaminen toimipisteestä
+     * onnistui.
      */
     public boolean removeToolFromOffice(String officeName, String toolName) {
         try {
@@ -184,6 +198,18 @@ public class InventoryService {
         return true;
     }
 
+    /**
+     * Muuttaa työvälineen määrää toimipisteessä.
+     * 
+     * @param officeName Sen toimipisteen nimi, jossa olevan työvälineen
+     * määrää halutaan muuttaa.
+     * @param toolName Sen työvälineen nimi, jonka määrää halutaan muuttaa.
+     * @param amount Käyttäjän syöttämä työvälineen määrä / määrän muutos.
+     * @param actionType Parametri määrittää, miten käyttäjän syöttämää
+     * lukumäärää käytetään.
+     * 
+     * @return Palauttaa true, jos määrän päivitys onnistui.
+     */
     public boolean updateToolAmountInOffice(String officeName, String toolName, String amount, String actionType) {
         try {
             Office office = this.officeDao.findByName(officeName);
@@ -206,16 +232,26 @@ public class InventoryService {
         return true;
     }
 
-    public boolean transferToolsBetweenOffices(String office1, String office2, String tool, String amount) {
+    /**
+     * Siirtää työvälineitä toimipisteestä toiseen.
+     * 
+     * @param officeFrom Sen toimipisteen nimi. josta työvälineitä siirretään.
+     * @param officeTo Sen toimipisteen nimi, johon siirretään.
+     * @param tool Sen työvälineen nimi, jota halutaan siirtää.
+     * @param amount Siirrettävä määrä.
+     * 
+     * @return Palauttaa true, jos siirto onnistui.
+     */
+    public boolean transferToolsBetweenOffices(String officeFrom, String officeTo, String tool, String amount) {
         try {
-            Office officeFrom = this.officeDao.findByName(office1);
-            Office officeTo = this.officeDao.findByName(office2);
+            Office fromOffice = this.officeDao.findByName(officeFrom);
+            Office toOffice = this.officeDao.findByName(officeTo);
             int amountToTransfer = this.validateNumberInput(amount);
 
-            if (officeFrom.updateAmount(tool, officeFrom.getAmount(tool) - amountToTransfer) &&
-                    officeTo.updateAmount(tool, officeTo.getAmount(tool) + amountToTransfer)) {
-                this.officeDao.updateToolList(officeFrom);
-                this.officeDao.updateToolList(officeTo);
+            if (fromOffice.updateAmount(tool, fromOffice.getAmount(tool) - amountToTransfer) &&
+                    toOffice.updateAmount(tool, toOffice.getAmount(tool) + amountToTransfer)) {
+                this.officeDao.updateToolList(fromOffice);
+                this.officeDao.updateToolList(toOffice);
             } else {
                 return false;
             }
@@ -226,9 +262,13 @@ public class InventoryService {
     }
 
     /**
-     * Kaikki työvälineet tai toimipisteet.
+     * Hakee kaikki työvälineet tai toimipisteet.
      * 
      * @param type Määrittää, haetaanko työvälineet vai toimipisteet.
+     * 
+     * @return Palauttaa aakkosittain järjestetyn listan työvälineistä
+     * tai toimipisteistä. Palauttaa tyhjän listan, jos jotain menee vikaan
+     * tietokannasta lukiessa.
      */
     public Collection<String> getItemList(String type) {
 
@@ -255,6 +295,10 @@ public class InventoryService {
      * Etsii ne toimipisteet, joissa ei vielä ole annettua työvälinettä.
      * 
      * @param toolName Työvälineen nimi.
+     * 
+     * @return Palauttaa aakkosittain järjestetyn listan toimipisteistä
+     * joissa ei ole parametrina annettua työvälinettä. Palauttaa tyhjän
+     * listan, jos jotain menee vikaan tietokannasta lukiessa.
      */
     public Collection<String> findOfficesWithoutTool(String toolName) {
         try {
@@ -273,6 +317,11 @@ public class InventoryService {
      * Etsii ne toimipisteet, joissa on annettu työväline.
      * 
      * @param toolName Työvälineen nimi.
+     * 
+     * @return Palauttaa luettelon toimipisteistä, joista löytyy parametrina
+     * annettu työväline, ja työvälineen määristä näissä toimipisteissä.
+     * Palauttaa tyhjän luettelon, jos jotain menee vikaan tietokannasta
+     * lukiessa.
      */
     public Map<String, Integer> findOfficesContainingTool(String toolName) {
         try {
@@ -290,6 +339,11 @@ public class InventoryService {
      * Etsii ne työvälineet, joita ei ole annetussa toimipisteessä.
      * 
      * @param officeName Toimipisteen nimi.
+     * 
+     * @return Palauttaa aakkosittain järjestetyn listan työvälineista,
+     * joita ei löydy parametrina annetusta toimipisteestä.
+     * Palauttaa tyhjän listan, jos jotain menee vikaan tietokannasta
+     * lukiessa.
      */
     public Collection<String> findToolsNotInOffice(String officeName) {
         try {
@@ -309,6 +363,11 @@ public class InventoryService {
      * Annetusta toimipisteestä löytyvät työvälineet.
      * 
      * @param officeName Toimipisteen nimi.
+     * 
+     * @return Palauttaa luettelon parametrina nimetystä toimipisteestä
+     * löytyvistä työvälineistä sekä niiden määristä.
+     * Palauttaa tyhjän luettelon, jos jotain menee vikaan tietokannasta
+     * lukiessa.
      */
     public Map<String, Integer> findToolsInOffice(String officeName) {
         try {
@@ -319,6 +378,14 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Hakee tiedon työvälineen kuluvuudesta.
+     * 
+     * @param name Etsittävän työvälineen nimi.
+     * 
+     * @return Palauttaa true, jos työväline on kuluva, muuten false.
+     * Palauttaa false myös, jos jotain menee vikaan tietokannasta lukiessa.
+     */
     public boolean getToolConsumability(String name) {
         try {
             Tool tool = this.toolDao.findByName(name);
@@ -328,6 +395,16 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Hakee työvälineen määrän tietyssä toimipisteessä.
+     * 
+     * @param officeName Sen toimipisteen nimi, josta työvälineen määrä
+     * halutaan selvittää.
+     * @param toolName Sen työvälineen nimi, jonka määrä halutaan selvittää.
+     * 
+     * @return Palauttaa työvälineen määrän. Palauttaa null, 
+     * jos jotain menee vikaan tietokannasta lukiessa.
+     */
     public Integer getAmountOfToolInOffice(String officeName, String toolName) {
         try {
             Office office = this.officeDao.findByName(officeName);
@@ -337,6 +414,17 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Hakee työvälineen määrän kaikista muista toimipisteistä, paitsi
+     * parametrina annetusta.
+     * 
+     * @param officeName Sen toimipisteen nimi, jonka tietoja EI haluta.
+     * @param toolName Sen työvälineen nimi, jonka tiedot halutaan hakea.
+     * 
+     * @return Palauttaa luettelon toimipisteistä, ja työvälineen
+     * määristä näissä toimipisteissä. Palauttaa tyhjän luettelon,
+     * jos jotain menee vikaan tietokannasta lukiessa.
+     */
     public Map<String, Integer> getToolDataFromOtherOffices(String officeName, String toolName) {
         try {
             return this.officeDao.getAll()

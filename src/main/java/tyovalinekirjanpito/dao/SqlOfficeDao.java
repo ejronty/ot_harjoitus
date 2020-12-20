@@ -23,6 +23,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
      * Lisää tietokantaan uuden toimipisteen tiedot.
      * 
      * @param name Lisättävän kohteen nimi.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
      */
     @Override
     public void create(String name) throws Exception {
@@ -40,6 +43,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
      * 
      * @param id Muutettavan kohteen tunnus.
      * @param newName Kohteelle annettava uusi nimi.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
      */
     @Override
     public void rename(int id, String newName) throws Exception {
@@ -56,6 +62,12 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
 
     /**
      * Hakee tietokannasta kaikki toimipisteet työvälineineen.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
+     * 
+     * @return Palauttaa listan kaikista tietokannasta lötyvistä
+     * toimipisteistä.
      */
     @Override
     public Collection<Office> getAll() throws Exception {
@@ -84,6 +96,11 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
      * Etsii tietokannasta annetun nimisen toimipisteen.
      * 
      * @param name Etsittävän toimipisteen nimi.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
+     * 
+     * @return Palauttaa toimipiste-olion, jos tiedot löytyvät.
      */
     @Override
     public Office findByName(String name) throws Exception {
@@ -109,6 +126,9 @@ public class SqlOfficeDao extends SqlThingDao implements OfficeDao {
      * Päivittää annetun toimipisteen työvälineet tietokantaan.
      * 
      * @param office Toimipiste, jonka työvälineista päivitetään.
+     * 
+     * @throws java.lang.Exception Heittää poikkeuksen, jos jotain menee
+     * vikaan.
      */
     @Override
     public void updateToolList(Office office) throws Exception {
