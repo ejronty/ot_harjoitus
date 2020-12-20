@@ -574,7 +574,7 @@ public class InventoryUI extends Application{
             if (this.service.transferToolsBetweenOffices(officeFrom, officeTo, tool, amountField.getText())) {
                 this.redrawContent(this.transferCompleteMessge(officeFrom, officeTo, tool));
             } else {
-                this.redrawContent(this.basicErrorMessage());
+                this.redrawContent(this.detailedErrorMessage());
             }
         });
 
@@ -622,7 +622,8 @@ public class InventoryUI extends Application{
         Label msg = new Label("Jotain meni vikaan.");
         Label instruction = new Label("Varmista, että\n"
                 + "antamasi syöte\n"
-                + "täyttää vaatimukset.");
+                + "täyttää vaatimukset,\n"
+                + "ja on järkevää.");
 
         wrapper.getChildren().addAll(msg, new Label(), instruction);
         return wrapper;
