@@ -25,7 +25,7 @@ public class InventoryServiceTest {
 
         try {
             service.createTool("Tool", false);
-            service.createTool("Another", false);
+            service.createTool("Another", true);
             service.createTool("Third", false);
 
             service.createOffice("Office");
@@ -50,10 +50,16 @@ public class InventoryServiceTest {
     }
 
     @Test
-    public void toolNamesCannoContainSpecialCharacters() throws Exception {
+    public void toolNamesCannotContainSpecialCharacters() throws Exception {
         service.createTool("/*#", false);
 
         assertFalse(toolDao.getAll().contains(new Tool("/*#", 1, false)));
+    }
+
+    @Test
+    public void officeNamesCannotContainSpecialCharacters() throws Exception {
+        service.createOffice("/*#");
+        assertFalse(officeDao.getAll().contains(new Office("/*#", 1)));
     }
 
     @Test
@@ -64,6 +70,14 @@ public class InventoryServiceTest {
     }
 
     @Test
+    public void ifToolIsRenamedItIsUpdatedInOffices() throws Exception {
+        service.addToolToOffice("Office", "Tool", "3");
+        service.editTool("Tool", "Drill", false);
+
+        assertTrue(officeDao.findByName("Office").containsTool("Drill"));
+    }
+
+    @Test
     public void officesCanBeRenamedThroughTheService() throws Exception {
         service.renameOffice("Office", "Warehouse");
 
@@ -71,9 +85,21 @@ public class InventoryServiceTest {
     }
 
     @Test
+    public void officeNameCannotBeChangredToEmpty() throws Exception {
+        assertFalse(service.renameOffice("Office", ""));
+    }
+
+    @Test
     public void toolsCanBeDeletedThroughTheService() throws Exception {
         service.delete("tools", "Tool");
         assertNull(toolDao.findByName("Tool"));
+    }
+
+    @Test
+    public void aDeletedToolIsAlsoRemovedFromOffices() throws Exception {
+        service.addToolToOffice("Office", "Tool", "2");
+        service.delete("tools", "Tool");
+        assertFalse(officeDao.findByName("Office").containsTool("Tool"));
     }
 
     @Test
@@ -90,11 +116,69 @@ public class InventoryServiceTest {
     }
 
     @Test
+    public void aNegativeAmountOfToolCannotBeAdded() {
+        assertFalse(service.addToolToOffice("Office", "Tool", "-1"));
+    }
+
+    @Test
+    public void aToolCannotBeAddedToOfficeTwiceThroughTheService() {
+        service.addToolToOffice("Office", "Tool", "3");
+        assertFalse(service.addToolToOffice("Office", "Tool", "4"));
+    }
+
+    @Test
     public void aToolCanBeRemovedFromAnOfficeThroughTheService() throws Exception {
         service.addToolToOffice("Office", "Tool", "3");
         service.removeToolFromOffice("Office", "Tool");
 
         assertEquals(0, officeDao.findByName("Office").getToolNames().size());
+    }
+
+    @Test
+    public void amountOfToolCanBeUpdatedThroughTheService() throws Exception {
+        service.addToolToOffice("Office", "Tool", "1");
+        service.updateToolAmountInOffice("Office", "Tool", "3", "modify");
+        assertEquals(3, officeDao.findByName("Office").getAmount("Tool"));
+    }
+
+    @Test
+    public void amountOfToolCanBeIncreasedThroughTheService() throws Exception {
+        service.addToolToOffice("Office", "Tool", "1");
+        service.updateToolAmountInOffice("Office", "Tool", "3", "add");
+        assertEquals(4, officeDao.findByName("Office").getAmount("Tool"));
+    }
+
+    @Test
+    public void toolsCanBeUsedThroughTheService() throws Exception {
+        service.addToolToOffice("Office", "Tool", "4");
+        service.updateToolAmountInOffice("Office", "Tool", "3", "use");
+        assertEquals(1, officeDao.findByName("Office").getAmount("Tool"));
+    }
+
+    @Test
+    public void amountOfToolsUsedCannotExeedAmountInOffice() throws Exception {
+        service.addToolToOffice("Office", "Tool", "3");
+        assertFalse(service.updateToolAmountInOffice("Office", "Tool", "5", "use"));
+    }
+
+    @Test
+    public void toolsCanBeTransferredBetweenOffices() throws Exception {
+        service.addToolToOffice("Office", "Tool", "3");
+        service.transferToolsBetweenOffices("Office", "Hq", "Tool", "2");
+        assertTrue(officeDao.findByName("Hq").containsTool("Tool"));
+    }
+
+    @Test
+    public void cannotTransferMoreThanOfficeContains() {
+        service.addToolToOffice("Hq", "Tool", "4");
+        assertFalse(service.transferToolsBetweenOffices("Hq", "Office", "Tool", "7"));
+    }
+
+    @Test
+    public void amountInReceivingOfficeCannotExeedLimitViaTransfer() {
+        service.addToolToOffice("Office", "Tool", "4");
+        service.addToolToOffice("Hq", "Tool", "998");
+        assertFalse(service.transferToolsBetweenOffices("Office", "Hq", "Tool", "3"));
     }
 
     @Test
@@ -153,5 +237,33 @@ public class InventoryServiceTest {
     public void ServiceReturnsToolsInOffice2() throws Exception {
         service.addToolToOffice("Office", "Tool", "3");
         assertEquals(1, service.findToolsInOffice("Office").size());
+    }
+
+    @Test
+    public void toolConsumabilityCanBeCheckedThroughTheService() {
+        assertFalse(service.getToolConsumability("Tool"));
+    }
+
+    @Test
+    public void toolConsumabilityCanBeCheckedThroughTheService2() {
+        assertTrue(service.getToolConsumability("Another"));
+    }
+
+    @Test
+    public void amountOfToolInOfficeCanBeCheckedThroughTheService() {
+        service.addToolToOffice("Hq", "Tool", "3");
+        assertTrue(service.getAmountOfToolInOffice("Hq", "Tool").equals(3));
+    }
+
+    @Test
+    public void ServiceReturnsToolInfoFromOtherOffices() {
+        service.addToolToOffice("Hq", "Tool", "3");
+        assertTrue(service.getToolDataFromOtherOffices("Hq", "Tool").containsKey("Office"));
+    }
+
+    @Test
+    public void ServiceReturnsToolInfoFromOtherOffices2() {
+        service.addToolToOffice("Hq", "Tool", "3");
+        assertFalse(service.getToolDataFromOtherOffices("Hq", "Tool").containsKey("Hq"));
     }
 }

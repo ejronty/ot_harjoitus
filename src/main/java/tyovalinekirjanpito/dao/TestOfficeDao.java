@@ -49,6 +49,9 @@ public class TestOfficeDao implements OfficeDao {
 
     @Override
     public void rename(int id, String newName) throws Exception {
+        if (newName.equals("")) {
+            return;
+        }
         this.offices.get(id).setName(newName);
     }
 

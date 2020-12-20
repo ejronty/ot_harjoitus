@@ -34,4 +34,6 @@
 | 16.12 | 7 | Uusia ominaisuuksia. |
 | 17.12 | 3.5 | Uusien toimintojen kehitystä. |
 | 19.12 | 5 | Uusien toimintojen kehitystä. |
-| yht | 129 | |
+| 20.12 | 2.5 | Dokumentaation päivitystä. |
+|  | 3.5 | Testien päivitystä ja uusia testejä. |
+| yht | 135 | |

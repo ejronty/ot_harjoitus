@@ -7,17 +7,13 @@ package tyovalinekirjanpito.domain;
  */
 
 public class Thing {
-    
+
     protected String name;
     protected int id;
-    
+
     public Thing(String name, int id) {
         this.name = name;
         this.id = id;
-    }
-    
-    public Thing(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -32,13 +28,9 @@ public class Thing {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    
     @Override
     public String toString() {
         return this.name;
     }
-    
+
 }

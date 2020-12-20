@@ -38,4 +38,15 @@ public class ToolTest {
     public void toStringReturnsTheNameOfTheTool() {
         assertEquals("hammer", tool.toString());
     }
+
+    @Test
+    public void toolConsumabilityCanBeObtained1() {
+        assertFalse(tool.isConsumable());
+    }
+
+    @Test
+    public void toolConsumabilityCanBeObtained2() {
+        Tool nail = new Tool("nail", 4, true);
+        assertTrue(nail.isConsumable());
+    }
 }

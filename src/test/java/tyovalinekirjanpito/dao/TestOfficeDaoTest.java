@@ -54,6 +54,20 @@ public class TestOfficeDaoTest {
     }
 
     @Test
+    public void officeCannotBeRenamedEmpty() throws Exception {
+        Office office = officeDao.findByName("warehouse");
+        officeDao.rename(office.getId(), "");
+
+        Office office2 = officeDao.getAll()
+                .stream()
+                .filter(o -> o.getId() == office.getId())
+                .findFirst()
+                .get();
+
+        assertFalse(office2.getName().isEmpty());        
+    }
+
+    @Test
     public void officeCanBeDeleted() throws Exception {
         officeDao.delete("test", 1);
         assertNull(officeDao.findByName("warehouse"));

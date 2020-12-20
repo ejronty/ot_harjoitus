@@ -168,6 +168,8 @@ public class InventoryService {
 
             if (office.addTool(toolName, this.validateNumberInput(amount))) {
                 this.officeDao.updateToolList(office);
+            } else {
+                return false;
             }
         } catch (Exception e) {
             return false;
