@@ -56,6 +56,4 @@ public class TestOfficeDao implements OfficeDao {
     public void delete(String table, int id) throws Exception {
         this.offices.remove(id);
     }
-
-
 }

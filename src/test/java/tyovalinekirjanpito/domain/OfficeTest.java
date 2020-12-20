@@ -9,58 +9,47 @@ import static org.junit.Assert.*;
 
 
 public class OfficeTest {
-    
+
     Office office;
     Tool tool;
-    
+
     @Before
     public void setUp() {
-        office = new Office("main office");
-        tool = new Tool("hammer");
+        office = new Office("main office", 1);
+        tool = new Tool("hammer", 1, false);
     }
-    
+
     @Test
     public void theNewOfficeExists() {
         assertTrue(office != null);
     }
-    
+
     @Test
     public void aNewOfficeHasNoTools() {
-        assertEquals(0, office.getTools().size());
+        assertEquals(0, office.getToolNames().size());
     }
-    
+
     @Test
     public void addingToolsToAnOfficeWorks1() {
-        office.addTool(tool);
-        assertEquals(1, office.getTools().size());
+        office.addTool(tool.getName(), 1);
+        assertEquals(1, office.getToolNames().size());
     }
-    
+
     @Test
     public void addingToolsToAnOfficeWorks2() {
-        office.addTool(tool);
-        assertTrue(office.getTools().contains(tool));
+        office.addTool(tool.getName(), 1);
+        assertTrue(office.getToolNames().contains(tool.getName()));
     }
-    
+
     @Test
     public void itIsNotPossibleToAddTheSameToolTwice() {
-        office.addTool(tool);
-        office.addTool(tool);
-        assertEquals(1, office.getTools().size());
+        office.addTool(tool.getName(), 1);
+        office.addTool(tool.getName(), 1);
+        assertEquals(1, office.getToolNames().size());
     }
-    
+
     @Test
     public void toStringReturnsTheNameOfTheOffice() {
         assertEquals("main office", office.toString());
-    }
-    
-    @Test
-    public void itIsPossibleToAddAListOfToolsToAnOfficeAtOnce() {
-        ArrayList<Tool> tools = new ArrayList<>();
-        tools.add(tool);
-        tools.add(new Tool("drill"));
-        tools.add(new Tool("screwdriver"));
-        
-        office.setTools(tools);
-        assertEquals(3, office.getTools().size());
     }
 }
