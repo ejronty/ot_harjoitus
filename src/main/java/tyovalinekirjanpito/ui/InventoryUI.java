@@ -624,15 +624,6 @@ public class InventoryUI extends Application{
         return wrapper;
     }
 
-    private VBox notYetReadyMessage() {
-        VBox wrapper = new VBox();
-        Label msg = new Label("Toiminto ei ole");
-        Label ant = new Label("vielä valmis.");
-
-        wrapper.getChildren().addAll(msg, ant);
-        return wrapper;
-    }
-
     private Tooltip getTooltip() {
         return new Tooltip("[a-ö], [0-9],  , -, _");
     }
