@@ -29,7 +29,7 @@ Vasemman yläreunan pudotusvalikosta voi valita, käsitelläänkö työvälineit
 Ohjelmaan saa luotua uuden kohteen painamalla vasemman reunan päävalikosta nappia 'Luo uusi'.
 Avautuu näkymä, johon voi antaa uuden kohteen nimen. Vasemman reunan pudotusvalikko määrää, kumman tyyppinen kohde luodaan. Työvälineen tapauksessa voi määritetään myös, onko kyseessä kuluva työväline. Esimerkkinä vasara ei kulu käytettäessä, mutta naulat kuluvat.
 
-![luo_uusi](kuvat/luo_uusi.png)
+![luo_uusi](kuvat/luo_uusi2.png)
 
 Jos välineen luominen onnistui, päivittyy ikkunan keskellä oleva lista.
 
