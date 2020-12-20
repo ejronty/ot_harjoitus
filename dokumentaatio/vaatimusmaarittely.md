@@ -5,7 +5,7 @@
 Sovellus on tarkoitettu avuksi henkilölle, joka työssään matkustaa useiden toimipisteiden välillä.
 Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineistä ja niiden määristä.
 
-## Suunnitellut tominnallisuudet
+## Tominnallisuudet
 
 * Koska kyseessä on työpöytäsovellus, ei tässä vaiheessa toteuteta käyttäjänhallintaa. Sovellusta oletetaan käytettävän yksityisellä laitteella.
 
@@ -22,29 +22,31 @@ Sovelluksella voi pitää kirjaa eri toimipisteillä sijaitsevista työvälineis
 * Työvälineiden listaus
 
 #### Muita näkymiä / toimintoja
-* Työvälineen
-    * ~~lisääminen~~ tehty
-    * ~~uudelleennimeäminen~~ tehty
-    * ~~poistaminen~~ tehty
-    * ~~toimipisteeseen yhdistäminen~~ tehty
-    * ~~toimipisteestä poistaminen~~ tehty
-    * ~~yhdistettyjen toimipisteiden listaus~~ tehty
+* Työväline
+    * uuden luominen
+    * muokkaaminen
+    * poistaminen
+    * toimipisteeseen yhdistäminen
+    * yhdistettyjen toimipisteiden listaus
+        * toimipisteestä poistaminen
 
-* Toimipisteen
-    * ~~lisääminen~~ tehty
-    * ~~uudelleennimeäminen~~ tehty
-    * ~~poistaminen~~ tehty
-    * ~~työvälineen lisääminen~~ tehty
-    * ~~työvälineen poistaminen~~ tehty
-    * ~~yhdistettyjen työvälineiden listaus~~ tehty
+* Toimipiste
+    * uuden luominen
+    * uudelleennimeäminen
+    * poistaminen
+    * työvälineen lisääminen
+    * yhdistettyjen työvälineiden listaus
+        * Yhdistettyjen työvälineiden määrän muutokset
+        * Yhdistetyn työvälineen siirto toiseen toimipisteeseen
+        * Työvälineen poisto toimipisteestä
     
 #### Muita vaatimuksia
-* ~~Graafinen käyttöliittymä~~ tehty
-* ~~Tiedon tallentaminen (tietokanta)~~ tehty
+* Graafinen käyttöliittymä
+* Tiedon tallentaminen (tietokanta)
+* Tieto työvälineiden määrästä eri toimipisteillä.
 
 
 #### Jatkokehitysideoita
-* Tieto työvälineiden määrästä eri toimipisteillä.
 * Hakukenttä (esim GUI:n ylälaitaan)
 * Työvälineille voi tallentaa luokkia/kategorioita/avainsanoja, joita voi hyödyntää haussa.
 * Käyttäjänhallinta, jolloin sovellusta voisi käyttää myös jaetulla laitteella.
