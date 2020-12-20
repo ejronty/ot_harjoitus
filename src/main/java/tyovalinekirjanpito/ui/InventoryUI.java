@@ -416,13 +416,17 @@ public class InventoryUI extends Application{
 
         ListView<String> list = new ListView();
         list.setMaxWidth(180);
+        list.setMaxHeight(200);
         list.getItems().addAll(this.service.findToolsNotInOffice(name));
+
+        Label msg5 = new Label("Montako?");
+        TextField amountField = this.getNumberInputField();
 
         Button submitButton = new Button("Valitse");
         submitButton.setOnAction(e -> {
             String itemName = list.getSelectionModel().getSelectedItem();
             if (itemName != null) {
-                if (this.service.addToolToOffice(name, itemName, "1")) {
+                if (this.service.addToolToOffice(name, itemName, amountField.getText())) {
                     redrawContent(showToolsInOfficeView(name));
                 } else {
                     redrawContent(detailedErrorMessage());
@@ -432,8 +436,8 @@ public class InventoryUI extends Application{
             }
         });
 
-        vbox.getChildren().addAll(msg1, msg2, msg3, msg4, 
-                list, submitButton);
+        vbox.getChildren().addAll(msg1, msg2, msg3, msg4,
+                list, msg5, amountField, submitButton);
         return vbox;
     }
 
